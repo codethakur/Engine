@@ -7,6 +7,7 @@ namespace eng
         virtual bool Init() = 0;
         virtual void Update(float deltaTime ) = 0;
         virtual void Destroy() = 0;
+        virtual ~Application() = default;
 
         void SetNeedsToBeClosed(bool value);
         bool NeedToBeClosed() const;

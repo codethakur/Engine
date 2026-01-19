@@ -1,13 +1,70 @@
 #include"Engine.h"
 #include"Application.h"
-
+#include "input/InputManager.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <iostream>
 namespace eng
 {
-    bool Engine::Init()
+    void keyCallback(GLFWwindow *window, int key,  int, int action, int )
+    {
+        auto& inputManager = eng::Engine::GetInstance().GetInputManager();
+
+        if (action == GLFW_PRESS)
+        {
+            inputManager.SetKeyPressed(key , true);
+        }
+        else if (action == GLFW_RELEASE)
+        {
+            inputManager.SetKeyPressed(key, false);
+        }
+
+    }
+    Engine& Engine::GetInstance()
+    {
+        static Engine instance;
+        return instance;
+    }
+
+    bool Engine::Init(int width, int height)
     {
         if(!m_application){
             return false;
         }
+        
+        #if defined(__APPLE__)
+            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        #endif
+        if (!glfwInit())
+        {
+            std::cerr << "GLFW init failed\n";
+            return false;
+        }
+
+        // macOS core profile
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+
+       m_window = glfwCreateWindow(width, height, "Game Engine", nullptr, nullptr);
+
+        if (!m_window)
+        {
+            std::cerr << "Window creation failed\n";
+            glfwTerminate();
+            return false;
+        }
+        glfwSetKeyCallback(m_window, keyCallback);
+
+        glfwMakeContextCurrent(m_window);
+
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+        {
+            std::cerr << "Failed to initialize GLAD\n";
+            return false;
+        }
+
         return m_application->Init();
     }
 
@@ -17,13 +74,17 @@ namespace eng
             return;
         }
         m_lastTimePoint = std::chrono::high_resolution_clock::now();   
-        while(!m_application->NeedToBeClosed())
-        { 
+        while(!glfwWindowShouldClose(m_window) && !m_application->NeedToBeClosed())
+        {
+            glfwPollEvents();
+
             auto now =  std::chrono::high_resolution_clock::now();  
             float deltaTime = std::chrono::duration<float>(now - m_lastTimePoint).count();
             m_lastTimePoint = now;
 
             m_application->Update(deltaTime);
+
+            glfwSwapBuffers(m_window);
 
         }
     }
@@ -33,6 +94,8 @@ namespace eng
         if(m_application){
             m_application->Destroy();
             m_application.reset();
+            glfwTerminate();
+            m_window = nullptr;
         }
     }
 
@@ -44,4 +107,10 @@ namespace eng
     {
         return m_application.get();
     }
+    
+    InputManager& Engine::GetInputManager()
+    {
+        return m_inputManager;
+    }
+    
 }

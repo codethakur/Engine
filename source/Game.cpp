@@ -1,5 +1,6 @@
 #include"Game.h"
 #include<iostream>
+#include <GLFW/glfw3.h>
 
 bool Game::Init() 
 {
@@ -7,7 +8,11 @@ bool Game::Init()
 }
 void Game::Update(float deltaTime ) 
 {
-    std::cout<<"Current Delta: "<<deltaTime<<std::endl;
+    auto& input = eng::Engine::GetInstance().GetInputManager();
+    if(input.IsKeyPreeesed(GLFW_KEY_A))
+    {
+        std::cout<<"[A] key is presed: \n";
+    }
 }
 void Game::Destroy() 
 {

@@ -10,6 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_library(${PROJECT_NAME} STATIC
     source/Engine.cpp
     source/Application.cpp
+    source/input/InputManager.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -39,8 +40,9 @@ add_subdirectory(thirdparty/glfw-3.4)
 find_package(OpenGL REQUIRED)
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE
-        glad
+    PUBLIC
         glfw
+        glad
+    PRIVATE
         OpenGL::GL
 )
