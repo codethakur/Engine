@@ -13,7 +13,7 @@ namespace eng
     }
     void ShaderProgram::Bind()
     {
-
+        glUseProgram(m_shaderProgramID);
     }
     GLint ShaderProgram::GetUniformLocation(const std::string& name)
     {
