@@ -76,6 +76,10 @@ namespace eng
         m_lastTimePoint = std::chrono::high_resolution_clock::now();   
         while(!glfwWindowShouldClose(m_window) && !m_application->NeedToBeClosed())
         {
+            
+            glClearColor(0.0f, 0.907f, 0.702f, 0.1f); 
+            glClear(GL_COLOR_BUFFER_BIT);
+
             glfwPollEvents();
 
             auto now =  std::chrono::high_resolution_clock::now();  
@@ -111,6 +115,10 @@ namespace eng
     InputManager& Engine::GetInputManager()
     {
         return m_inputManager;
+    }
+    GraphicsAPI& Engine::GetGraphicsAPI()
+    {
+        return m_graphicsAPI;
     }
     
 }

@@ -11,11 +11,14 @@ add_library(${PROJECT_NAME} STATIC
     source/Engine.cpp
     source/Application.cpp
     source/input/InputManager.cpp
+    source/graphics/ShaderProgram.cpp
+    source/graphics/GraphicsAPI.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/source
+        ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glad/include
 )
 
 # =========================
