@@ -14,6 +14,8 @@ add_library(${PROJECT_NAME} STATIC
     source/graphics/ShaderProgram.cpp
     source/graphics/GraphicsAPI.cpp
     source/render/Material.cpp
+    source/render/Mesh.cpp
+    source/render/RenderQueue.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

@@ -1,6 +1,7 @@
 #include "graphics/GraphicsAPI.h"
 #include "graphics/ShaderProgram.h"
 #include "render/Material.h"
+#include"render/Mesh.h"
 #include <iostream>
 namespace eng
 {
@@ -53,6 +54,37 @@ namespace eng
     }
     return std::make_shared<ShaderProgram>(shaderProgramID);
   }
+
+
+  GLuint GraphicsAPI::CreateVertexBuffer(const std::vector<float>vertices)
+  {
+    GLuint VBO;
+    glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER,vertices.size()*sizeof(float), vertices.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    return VBO;
+
+  }
+  GLuint GraphicsAPI::CreateIndexBuffer(const std::vector<uint32_t>indeces)
+  {
+    GLuint EBO;
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indeces.size()*sizeof(uint32_t), indeces.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    return EBO;
+  }
+  void GraphicsAPI::SetClearColor(float r, float g, float b, float a)
+  {
+    glClearColor(r, g, b, a);
+   
+  }
+  void GraphicsAPI::clearBuffers()
+  {
+    glClear(GL_COLOR_BUFFER_BIT);
+  }
+
   void GraphicsAPI::BindShaderProgram(ShaderProgram *shaderProgram)
   {
     if (shaderProgram)
@@ -68,4 +100,17 @@ namespace eng
       material->Bind();
     }
   }
+  void GraphicsAPI::BindMesh(Mesh* mesh)
+  {
+    if(mesh){
+      mesh->Bind();
+    }
+  }
+  void GraphicsAPI::DrawMesh(Mesh* mesh)
+  {
+    if(mesh){
+      mesh->Draw();
+    }
+  }
 }
+

@@ -64,6 +64,9 @@ namespace eng
             std::cerr << "Failed to initialize GLAD\n";
             return false;
         }
+        int fbWidth, fbHeight;
+        glfwGetFramebufferSize(m_window, &fbWidth, &fbHeight);
+        glViewport(0, 0, fbWidth, fbHeight);
 
         return m_application->Init();
     }
@@ -76,10 +79,6 @@ namespace eng
         m_lastTimePoint = std::chrono::high_resolution_clock::now();   
         while(!glfwWindowShouldClose(m_window) && !m_application->NeedToBeClosed())
         {
-            
-            glClearColor(0.0f, 0.907f, 0.702f, 0.1f); 
-            glClear(GL_COLOR_BUFFER_BIT);
-
             glfwPollEvents();
 
             auto now =  std::chrono::high_resolution_clock::now();  
@@ -87,6 +86,11 @@ namespace eng
             m_lastTimePoint = now;
 
             m_application->Update(deltaTime);
+
+            m_graphicsAPI.SetClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+            m_graphicsAPI.clearBuffers();
+
+            m_renderQueue.Draw(m_graphicsAPI);
 
             glfwSwapBuffers(m_window);
 
@@ -119,6 +123,10 @@ namespace eng
     GraphicsAPI& Engine::GetGraphicsAPI()
     {
         return m_graphicsAPI;
+    }
+    RenderQueue& Engine::GetRenderQueue()
+    {
+        return m_renderQueue;
     }
     
 }

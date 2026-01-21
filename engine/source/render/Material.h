@@ -8,7 +8,7 @@ namespace eng
     class Material
     {
     public:
-        void SetshaderProgram(const std::shared_ptr<ShaderProgram>& shaderProgram);
+        void SetShaderProgram(const std::shared_ptr<ShaderProgram>& shaderProgram);
         void SetParam(const std::string& name, float value);
         void Bind();
     private:

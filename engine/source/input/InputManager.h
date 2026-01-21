@@ -14,7 +14,7 @@ namespace eng
 
     public:
         void SetKeyPressed(int key, bool pressed);
-        bool IsKeyPreeesed(int key);
+        bool IsKeyPressed(int key);
     private:
         std::array<bool, 256> m_keys = {false};
         friend class Engine;

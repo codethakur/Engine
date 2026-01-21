@@ -1,4 +1,5 @@
-#include "InputManager.h"
+#include "input/InputManager.h"
+
 
 namespace eng
 {
@@ -10,7 +11,7 @@ namespace eng
         }   
         m_keys[key] = pressed;
     }
-    bool InputManager::IsKeyPreeesed(int key)
+    bool InputManager::IsKeyPressed(int key)
     {
         if(key<0 || key>=static_cast<int>(m_keys.size())){
             return false;
