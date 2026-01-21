@@ -1,6 +1,7 @@
 #include"Game.h"
 #include<iostream>
 #include <GLFW/glfw3.h>
+#include <algorithm> // for std::clamp
 
 bool Game::Init()
 {
@@ -10,11 +11,12 @@ bool Game::Init()
         layout (location = 1) in vec3 color;
 
         out vec3 vColor;
+        uniform vec2 uOffset;
 
         void main()
         {
             vColor = color;
-            gl_Position = vec4(position.x, position.y, position.z, 1.0);
+            gl_Position = vec4(position.x + uOffset.x, position.y + uOffset.y, position.z, 1.0);
         }
     )";
 
@@ -75,10 +77,23 @@ void Game::Update(float deltaTime)
 {
     auto& input = eng::Engine::GetInstance().GetInputManager();
 
+    //Horizontal Movement
     if (input.IsKeyPressed(GLFW_KEY_A))
-    {
-        std::cout << "[A] button is pressed" << std::endl;
-    }
+        m_offsetX -= 0.01f;
+    else if (input.IsKeyPressed(GLFW_KEY_D))
+        m_offsetX += 0.01f;
+
+
+    //Vertical movement
+    if (input.IsKeyPressed(GLFW_KEY_W))
+        m_offsetY += 0.01f;
+    else if (input.IsKeyPressed(GLFW_KEY_S))
+        m_offsetY -= 0.01f;
+
+    m_offsetX = std::clamp(m_offsetX, -0.5f, 0.5f);
+    m_offsetY = std::clamp(m_offsetY, -0.5f, 0.5f);
+    
+    m_material.SetParam("uOffset", m_offsetX, m_offsetY);
 
     eng::RenderCommand command;
     command.material = &m_material;
