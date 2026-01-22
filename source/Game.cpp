@@ -1,30 +1,41 @@
-#include"Game.h"
-#include<iostream>
+#include "Game.h"
 #include <GLFW/glfw3.h>
-#include <algorithm> // for std::clamp
+#include <iostream>
+#include <cmath>
 
 bool Game::Init()
 {
-    std::string vertexShaderSource = R"(
+    auto& graphicsAPI = eng::Engine::GetInstance().GetGraphicsAPI();
+
+    // =========================
+    // SHADER 1 (Move + Scale)
+    // =========================
+    std::string vertexSrc1 = R"(
         #version 330 core
         layout (location = 0) in vec3 position;
         layout (location = 1) in vec3 color;
 
-        out vec3 vColor;
         uniform vec2 uOffset;
+        uniform vec2 uScale;
+
+        out vec3 vColor;
 
         void main()
         {
             vColor = color;
-            gl_Position = vec4(position.x + uOffset.x, position.y + uOffset.y, position.z, 1.0);
+            gl_Position = vec4(
+                position.x * uScale.x + uOffset.x,
+                position.y * uScale.y + uOffset.y,
+                position.z,
+                1.0
+            );
         }
     )";
 
-    std::string fragmentShaderSource = R"(
+    std::string fragmentSrc = R"(
         #version 330 core
-        out vec4 FragColor;
-
         in vec3 vColor;
+        out vec4 FragColor;
 
         void main()
         {
@@ -32,16 +43,58 @@ bool Game::Init()
         }
     )";
 
-    auto& graphicsAPI = eng::Engine::GetInstance().GetGraphicsAPI();
-    auto shaderProgram = graphicsAPI.CreateShaderProgram(vertexShaderSource, fragmentShaderSource);
-    m_material.SetShaderProgram(shaderProgram);
+    auto shader1 = graphicsAPI.CreateShaderProgram(vertexSrc1, fragmentSrc);
 
+    materials["object_1"] = std::make_shared<eng::Material>();
+    materials["object_1"]->SetShaderProgram(shader1);
+
+    // =========================
+    // SHADER 2 (Rotation + Color)
+    // =========================
+    std::string vertexSrc2 = R"(
+        #version 330 core
+        layout (location = 0) in vec3 position;
+        layout (location = 1) in vec3 color;
+
+        uniform vec2 uOffset;
+        uniform vec2 uRotation; // x = angle, y = color multiplier
+
+        out vec3 vColor;
+
+        void main()
+        {
+            float a = uRotation.x;
+            mat2 rot = mat2(
+                cos(a), -sin(a),
+                sin(a),  cos(a)
+            );
+
+            vec2 rotated = rot * position.xy;
+            vColor = color * uRotation.y;
+
+            gl_Position = vec4(
+                rotated.x + uOffset.x,
+                rotated.y + uOffset.y,
+                position.z,
+                1.0
+            );
+        }
+    )";
+
+    auto shader2 = graphicsAPI.CreateShaderProgram(vertexSrc2, fragmentSrc);
+
+    materials["object_2"] = std::make_shared<eng::Material>();
+    materials["object_2"]->SetShaderProgram(shader2);
+
+    // =========================
+    // MESH DATA
+    // =========================
     std::vector<float> vertices =
     {
-        0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-        -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
-        0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f
+         0.2f,  0.2f, 0.0f, 1, 0, 0,
+        -0.2f,  0.2f, 0.0f, 0, 1, 0,
+        -0.2f, -0.2f, 0.0f, 0, 0, 1,
+         0.2f, -0.2f, 0.0f, 1, 1, 0
     };
 
     std::vector<unsigned int> indices =
@@ -50,60 +103,75 @@ bool Game::Init()
         0, 2, 3
     };
 
-    eng::VertexLayout vertexLayout;
+    eng::VertexLayout layout;
+    layout.elements.push_back({ 0, 3, GL_FLOAT, 0 });
+    layout.elements.push_back({ 1, 3, GL_FLOAT, sizeof(float) * 3 });
+    layout.stride = sizeof(float) * 6;
 
-    // Postion
-    vertexLayout.elements.push_back({
-        0, 
-        3, 
-        GL_FLOAT,
-        0
-        });
-    // Color
-    vertexLayout.elements.push_back({
-        1,
-        3,
-        GL_FLOAT,
-        sizeof(float) * 3
-        });
-    vertexLayout.stride = sizeof(float) * 6; 
+    meshes["object_1"] = std::make_unique<eng::Mesh>(layout, vertices, indices);
+    meshes["object_2"] = std::make_unique<eng::Mesh>(layout, vertices, indices);
 
-    m_mesh = std::make_unique<eng::Mesh>(vertexLayout, vertices, indices);
+    // =========================
+    // GAME OBJECTS
+    // =========================
+    gameObjects["object_1"] = {};
+    gameObjects["object_2"] = { -0.6f, 0.6f };
 
     return true;
 }
 
 void Game::Update(float deltaTime)
 {
-    auto& input = eng::Engine::GetInstance().GetInputManager();
+    auto cmd1 = UpdateControllableObject("object_1", deltaTime);
+    auto cmd2 = UpdateObject("object_2", deltaTime);
 
-    //Horizontal Movement
-    if (input.IsKeyPressed(GLFW_KEY_A))
-        m_offsetX -= 0.01f;
-    else if (input.IsKeyPressed(GLFW_KEY_D))
-        m_offsetX += 0.01f;
-
-
-    //Vertical movement
-    if (input.IsKeyPressed(GLFW_KEY_W))
-        m_offsetY += 0.01f;
-    else if (input.IsKeyPressed(GLFW_KEY_S))
-        m_offsetY -= 0.01f;
-
-    m_offsetX = std::clamp(m_offsetX, -0.5f, 0.5f);
-    m_offsetY = std::clamp(m_offsetY, -0.5f, 0.5f);
-    
-    m_material.SetParam("uOffset", m_offsetX, m_offsetY);
-
-    eng::RenderCommand command;
-    command.material = &m_material;
-    command.mesh = m_mesh.get();
-
-    auto& renderQueue = eng::Engine::GetInstance().GetRenderQueue();
-    renderQueue.Submit(command);
+    auto& rq = eng::Engine::GetInstance().GetRenderQueue();
+    rq.Submit(cmd1);
+    rq.Submit(cmd2);
 }
 
 void Game::Destroy()
 {
+    materials.clear();
+    meshes.clear();
+    gameObjects.clear();
+}
 
+eng::RenderCommand Game::UpdateControllableObject(const std::string& name, float deltaTime)
+{
+    auto& input = eng::Engine::GetInstance().GetInputManager();
+    auto& obj = gameObjects.at(name);
+
+    const float speed = 0.5f;
+
+    if (input.IsKeyPressed(GLFW_KEY_A)) obj.offsetX -= speed * deltaTime;
+    if (input.IsKeyPressed(GLFW_KEY_D)) obj.offsetX += speed * deltaTime;
+    if (input.IsKeyPressed(GLFW_KEY_W)) obj.offsetY += speed * deltaTime;
+    if (input.IsKeyPressed(GLFW_KEY_S)) obj.offsetY -= speed * deltaTime;
+
+    auto& mat = *materials.at(name);
+    mat.SetParam("uOffset", obj.offsetX, obj.offsetY);
+    mat.SetParam("uScale", obj.scaleX, obj.scaleY);
+
+    eng::RenderCommand cmd;
+    cmd.material = &mat;
+    cmd.mesh = meshes.at(name).get();
+    return cmd;
+}
+
+eng::RenderCommand Game::UpdateObject(const std::string& name, float deltaTime)
+{
+    auto& obj = gameObjects.at(name);
+
+    obj.rotation += deltaTime;
+    obj.colorMul = 0.5f * (std::sin(obj.rotation) + 1.0f);
+
+    auto& mat = *materials.at(name);
+    mat.SetParam("uOffset", obj.offsetX, obj.offsetY);
+    mat.SetParam("uRotation", obj.rotation, obj.colorMul);
+
+    eng::RenderCommand cmd;
+    cmd.material = &mat;
+    cmd.mesh = meshes.at(name).get();
+    return cmd;
 }

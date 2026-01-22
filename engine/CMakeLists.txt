@@ -16,6 +16,8 @@ add_library(${PROJECT_NAME} STATIC
     source/render/Material.cpp
     source/render/Mesh.cpp
     source/render/RenderQueue.cpp
+    source/Scene/GameObject.cpp
+    source/Scene/Scene.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

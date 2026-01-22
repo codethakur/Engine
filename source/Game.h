@@ -1,17 +1,35 @@
 #pragma once
-#include"eng.h"
-#include<memory>
 
-class Game:public eng::Application
+#include "eng.h"
+#include <unordered_map>
+#include <memory>
+#include <string>
+
+struct GameObject
+{
+    float offsetX = 0.0f;
+    float offsetY = 0.0f;
+
+    float scaleX = 1.0f;
+    float scaleY = 1.0f;
+
+    float rotation = 0.0f;
+    float colorMul = 1.0f;
+};
+
+class Game : public eng::Application
 {
 public:
-    virtual bool Init() override;
-    virtual void Update(float deltaTime ) override;
-    virtual void Destroy() override;
+    bool Init() override;
+    void Update(float deltaTime) override;
+    void Destroy() override;
+
 private:
-    eng::Material m_material;
-    std::unique_ptr<eng::Mesh> m_mesh;
-    float m_offsetX = 0.0f;
-    float m_offsetY = 0.0f;
- 
+    eng::RenderCommand UpdateControllableObject(const std::string& name, float deltaTime);
+    eng::RenderCommand UpdateObject(const std::string& name, float deltaTime);
+
+private:
+    std::unordered_map<std::string, std::shared_ptr<eng::Material>> materials;
+    std::unordered_map<std::string, std::unique_ptr<eng::Mesh>> meshes;
+    std::unordered_map<std::string, GameObject> gameObjects;
 };

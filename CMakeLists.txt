@@ -13,6 +13,8 @@ add_executable(${PROJECT_NAME}
     source/main.cpp
     source/Game.h    
     source/Game.cpp
+    source/TestObject.h
+    source/TestObject.cpp
 )
 include_directories(engine/source)
 # Link against engine
