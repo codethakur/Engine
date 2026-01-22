@@ -11,12 +11,12 @@ TestObject::TestObject()
         layout (location = 1) in vec3 color;
 
         out vec3 vColor;
-        uniform vec2 uOffset;
+        uniform mat4 uModel;
 
         void main()
         {
             vColor = color;
-            gl_Position = vec4(position.x + uOffset.x, position.y + uOffset.y, position.z, 1.0);
+            gl_Position = uModel * vec4(position, 1.0);
         }
     )";
 
@@ -34,7 +34,9 @@ TestObject::TestObject()
 
     auto& graphicsAPI = eng::Engine::GetInstance().GetGraphicsAPI();
     auto shaderProgram = graphicsAPI.CreateShaderProgram(vertexShaderSource, fragmentShaderSource);
-    m_material.SetShaderProgram(shaderProgram);
+    
+    auto material = std::make_shared<eng::Material>();
+    material->SetShaderProgram(shaderProgram);
 
     std::vector<float> vertices =
     {
@@ -68,38 +70,34 @@ TestObject::TestObject()
         });
     vertexLayout.stride = sizeof(float) * 6; 
 
-    m_mesh = std::make_shared<eng::Mesh>(vertexLayout, vertices, indices);
+    auto mesh = std::make_shared<eng::Mesh>(vertexLayout, vertices, indices);
+    AddComponent(new eng::MeshComponent(material, mesh));
 
 }
 
 void TestObject::Update(float deltaTime)
 {
     eng::GameObject::Update(deltaTime);
-        auto& input = eng::Engine::GetInstance().GetInputManager();
+
+    auto position = GetPosition();
+    auto& input = eng::Engine::GetInstance().GetInputManager();
 
     //Horizontal Movement
     if (input.IsKeyPressed(GLFW_KEY_A))
-        m_offsetX -= 0.01f;
+        position.x -= 0.01f;
     else if (input.IsKeyPressed(GLFW_KEY_D))
-        m_offsetX += 0.01f;
+        position.x+= 0.01f;
 
 
     //Vertical movement
     if (input.IsKeyPressed(GLFW_KEY_W))
-        m_offsetY += 0.01f;
+       position.y += 0.01f;
     else if (input.IsKeyPressed(GLFW_KEY_S))
-        m_offsetY -= 0.01f;
+      position.y -= 0.01f;
 
-    m_offsetX = std::clamp(m_offsetX, -0.5f, 0.5f);
-    m_offsetY = std::clamp(m_offsetY, -0.5f, 0.5f);
-    
-    m_material.SetParam("uOffset", m_offsetX, m_offsetY);
+    position.x = std::clamp(position.x, -0.5f, 0.5f);
+    position.y = std::clamp(position.y, -0.5f, 0.5f);
 
-    eng::RenderCommand command;
-    command.material = &m_material;
-    command.mesh = m_mesh.get();
-
-    auto& renderQueue = eng::Engine::GetInstance().GetRenderQueue();
-    renderQueue.Submit(command);
+    SetPosition(position);
 
 }

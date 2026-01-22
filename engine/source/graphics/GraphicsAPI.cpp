@@ -93,7 +93,7 @@ namespace eng
     }
   }
 
-  void GraphicsAPI::BindMaterial(Material *material)
+  void GraphicsAPI::BindMaterial(Material* material)
   {
     if (material)
     {

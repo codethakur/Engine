@@ -2,6 +2,11 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include<glm/vec3.hpp>
+#include<glm/mat4x4.hpp>
+
+#include<scene/Component.h>
+
 namespace eng
 {
     class GameObject
@@ -14,13 +19,32 @@ namespace eng
         GameObject* GetParent();
         bool IsAlive() const;
         void markorDestroy();
+
+        void AddComponent(Component* component);
+
+        glm::vec3 GetPosition() const;
+        void SetPosition(const glm::vec3& position);
+
+        glm::vec3 GetRotation() const;
+        void SetRotation(const glm::vec3& rotation);
+
+        glm::vec3 GetScale() const;
+        void SetScale(const glm::vec3& scale);
+
+        glm::mat4 GetLocalTransform() const;
+        glm::mat4 GetWorldTransform() const;
+
     protected:
         GameObject() = default;
     private : 
         std::string m_name;
         GameObject* m_parent = nullptr;
         std::vector<std::unique_ptr<GameObject>> m_children;
+        std::vector<std::unique_ptr<Component>>m_components;
         bool m_isAlive = true;
+        glm::vec3 m_position = glm::vec3(0.0f);
+        glm::vec3 m_rotation = glm::vec3(0.0f);
+        glm::vec3 m_scale = glm::vec3(1.0f);
 
         friend class Scene;
     };

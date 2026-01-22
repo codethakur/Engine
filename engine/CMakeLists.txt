@@ -18,12 +18,16 @@ add_library(${PROJECT_NAME} STATIC
     source/render/RenderQueue.cpp
     source/Scene/GameObject.cpp
     source/Scene/Scene.cpp
+    source/Scene/Component.cpp
+    source/Scene/components/MeshComponent.cpp
+
 )
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/source
         ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glad/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glm
 )
 
 # =========================
