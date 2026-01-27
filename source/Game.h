@@ -9,6 +9,6 @@ public:
     virtual void Update(float deltaTime ) override;
     virtual void Destroy() override;
 private:
-    eng::Scene m_scene;
+    eng::Scene* m_scene = nullptr;
 
 };

@@ -13,12 +13,17 @@ namespace eng
        Material* material = nullptr;
        glm::mat4 modelMatrix;
     };
+    struct CameraData
+    {
+        glm::mat4 viewMatrix;
+        glm::mat4 projectionMatrix;
+    };
 
     class RenderQueue
     {
     public:
         void Submit(const RenderCommand& command);//enque the command
-        void Draw(GraphicsAPI& graphicsAPI);
+        void Draw(GraphicsAPI& graphicsAPI, const CameraData& cameraData);
     private:
     std::vector<RenderCommand>m_commands;
 

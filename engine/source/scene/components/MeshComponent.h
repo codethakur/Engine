@@ -9,6 +9,7 @@ namespace eng
     class MeshComponent : public Component
     {
     public:
+     COMPONENT(MeshComponent)
         MeshComponent(const std::shared_ptr<Material>& material, const std::shared_ptr<Mesh>& mesh);
 
         void Update(float deltaTime) override;

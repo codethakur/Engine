@@ -14,6 +14,7 @@ namespace eng
     class GraphicsAPI
     {
     public:
+        bool Init();
         std::shared_ptr<ShaderProgram> CreateShaderProgram(
         const std::string& vertexPath,
         const std::string& fragmentPath);

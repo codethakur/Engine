@@ -11,12 +11,15 @@ TestObject::TestObject()
         layout (location = 1) in vec3 color;
 
         out vec3 vColor;
+
         uniform mat4 uModel;
+        uniform mat4 uView;
+        uniform mat4 uProjection;
 
         void main()
         {
             vColor = color;
-            gl_Position = uModel * vec4(position, 1.0);
+            gl_Position = uProjection * uModel * uView * vec4(position, 1.0);
         }
     )";
 
@@ -40,17 +43,76 @@ TestObject::TestObject()
 
     std::vector<float> vertices =
     {
-        0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-        -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
-        0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f
+        0.5f,  0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+       -0.5f,  0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+       -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+        0.5f, -0.5f, 0.5f, 1.0f, 1.0f, 0.0f,
+
+        0.5f,  0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+       -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+       -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f
     };
 
     std::vector<unsigned int> indices =
     {
+        //front face
         0, 1, 2,
-        0, 2, 3
+        0, 2, 3,
+
+        //top face
+        4, 5, 1,
+        4, 1, 0,
+
+        //right face
+        4, 0, 3,
+        4, 3, 7,
+        
+        //left face
+        1, 5, 6,
+        1, 6, 2,
+
+        //bottm face
+        3, 2, 6,
+        3, 6, 7,
+
+        //back face
+        4, 7, 6,
+        4, 6, 5
     };
+
+#if 0
+    std::vector<float> vertices =
+    {
+        // ===== Top strip (Saffron) =====
+        -0.5f,  0.5f,     0.0f,   1.0f, 0.6f, 0.2f,
+        0.5f,  0.5f,     0.0f,   1.0f, 0.6f, 0.2f,
+        0.5f,  0.1666f,  0.0f,   1.0f, 0.6f, 0.2f,
+
+        0.5f,  0.1666f,  0.0f,   1.0f, 0.6f, 0.2f,
+        -0.5f,  0.1666f,  0.0f,   1.0f, 0.6f, 0.2f,
+        -0.5f,  0.5f,     0.0f,   1.0f, 0.6f, 0.2f,
+
+        // ===== Middle strip (White) =====
+        -0.5f,  0.1666f,  0.0f,   1.0f, 1.0f, 1.0f,
+        0.5f,  0.1666f,  0.0f,   1.0f, 1.0f, 1.0f,
+        0.5f, -0.1666f,  0.0f,   1.0f, 1.0f, 1.0f,
+
+        0.5f, -0.1666f,  0.0f,   1.0f, 1.0f, 1.0f,
+        -0.5f, -0.1666f,  0.0f,   1.0f, 1.0f, 1.0f,
+        -0.5f,  0.1666f,  0.0f,   1.0f, 1.0f, 1.0f,
+
+        // ===== Bottom strip (Green) =====
+        -0.5f, -0.1666f,  0.0f,   0.1f, 0.6f, 0.2f,
+        0.5f, -0.1666f,  0.0f,   0.1f, 0.6f, 0.2f,
+        0.5f, -0.5f,     0.0f,   0.1f, 0.6f, 0.2f,
+
+        0.5f, -0.5f,     0.0f,   0.1f, 0.6f, 0.2f,
+        -0.5f, -0.5f,     0.0f,   0.1f, 0.6f, 0.2f,
+        -0.5f, -0.1666f,  0.0f,   0.1f, 0.6f, 0.2f,
+    };
+#endif
+
 
     eng::VertexLayout vertexLayout;
 
@@ -78,7 +140,7 @@ TestObject::TestObject()
 void TestObject::Update(float deltaTime)
 {
     eng::GameObject::Update(deltaTime);
-
+    #if 0
     auto position = GetPosition();
     auto& input = eng::Engine::GetInstance().GetInputManager();
 
@@ -99,5 +161,6 @@ void TestObject::Update(float deltaTime)
     position.y = std::clamp(position.y, -0.5f, 0.5f);
 
     SetPosition(position);
+    #endif
 
 }

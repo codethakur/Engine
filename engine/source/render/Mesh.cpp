@@ -53,12 +53,14 @@ namespace eng
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         m_vertexCount = (vertices.size() * sizeof(float))/ m_vertexLayout.stride;
     }
+
     void Mesh::Bind()
     {
         glBindVertexArray(m_VAO);
     }
     void Mesh::Draw()
     {
+        
         if (m_indexCount > 0)
         {
             glDrawElements(GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, 0);
