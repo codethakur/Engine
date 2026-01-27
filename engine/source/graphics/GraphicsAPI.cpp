@@ -10,7 +10,6 @@ namespace eng
     glEnable(GL_CULL_FACE);   // allow discarding invisible triangles
     glCullFace(GL_BACK);     // discard inside faces
     glFrontFace(GL_CCW);     // define what "front" means
-
     glEnable(GL_DEPTH_TEST);
 
     return true;

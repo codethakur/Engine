@@ -109,19 +109,21 @@ bool Game::Init()
 
     auto mesh = std::make_shared<eng::Mesh>(vertexLayout, vertices, indices);
 
-    auto objectA = m_scene->CreateObject("objectA");
+    auto objectA = m_scene->CreateObject("ObjectA");
     objectA->AddComponent(new eng::MeshComponent(material, mesh));
     objectA->SetPosition(glm::vec3(0.0f, 2.0f, 0.0f));
 
-   auto objectB = m_scene->CreateObject("objectB");
+    auto objectB = m_scene->CreateObject("ObjectB");
     objectB->AddComponent(new eng::MeshComponent(material, mesh));
-    objectB->SetPosition(glm::vec3(2.0f, 0.0f, 0.0f));
-    objectB->SetRotation(glm::vec3(1.0f, 0.0f, 0.0f));
+    objectB->SetPosition(glm::vec3(0.0f, 2.0f, 2.0f));
+    objectB->SetRotation(glm::vec3(0.0f, 2.0f, 0.0f));
 
-    auto objectC = m_scene->CreateObject("bjectC");
+    auto objectC = m_scene->CreateObject("ObjectC");
     objectC->AddComponent(new eng::MeshComponent(material, mesh));
     objectC->SetPosition(glm::vec3(-2.0f, 0.0f, 0.0f));
-    objectC->SetScale(   glm::vec3(1.5f, 1.5f, 1.5f));
+    objectC->SetRotation(glm::vec3(1.0f, 0.0f, 1.0f));
+    objectC->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
+
 
 
     eng::Engine::GetInstance().SetScene(m_scene);

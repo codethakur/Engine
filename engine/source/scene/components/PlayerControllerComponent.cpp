@@ -34,15 +34,14 @@ namespace eng
             glm::vec3 right = rotation* glm::vec3(1.0f, 0.0f, 0.0f); //Local +X (right)
             glm::quat xRot = glm::angleAxis(xAngle, right);
 
-            glm::quat deltaTime = yRot * xRot;
-            rotation = glm::normalize(deltaTime * rotation);
+            glm::quat deltaRot = yRot * xRot;
+            rotation = glm::normalize(deltaRot * rotation);
 
             m_owner->SetRotation(rotation); 
         }
 
-        glm::vec3 font = rotation * glm::vec3(0.0f, 0.0f, -1.0f);
+        glm::vec3 front =  rotation * glm::vec3(0.0f, 0.0f, -1.0f);
         glm::vec3 right =  rotation* glm::vec3(1.0f, 0.0f, 0.0f); //Local +X (right)
-
         auto position = m_owner->GetPosition();
         //left/right Movement
         if (inputManager.IsKeyPressed(GLFW_KEY_A))
@@ -53,11 +52,19 @@ namespace eng
 
         //Vertical movement
         if (inputManager.IsKeyPressed(GLFW_KEY_W))
-            position += font * m_moveSpeed *deltaTime;
+            position += front * m_moveSpeed *deltaTime;
         else if (inputManager.IsKeyPressed(GLFW_KEY_S))
-            position -= font * m_moveSpeed *deltaTime;
+            position -= front * m_moveSpeed *deltaTime;
 
 
+        glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+
+        if (inputManager.IsKeyPressed(GLFW_KEY_SPACE))
+            position += up * m_moveSpeed * deltaTime;
+
+        if (inputManager.IsKeyPressed(GLFW_KEY_LEFT_CONTROL))
+            position -= up * m_moveSpeed * deltaTime;
+            
         #if 0
             position.x = std::clamp(position.x, -0.5f, 0.5f);
             position.y = std::clamp(position.y, -0.5f, 0.5f);
