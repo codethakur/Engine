@@ -19,6 +19,7 @@ add_library(${PROJECT_NAME} STATIC
     source/input/InputManager.cpp
     source/graphics/ShaderProgram.cpp
     source/graphics/GraphicsAPI.cpp
+    source/graphics/Texture.cpp
     source/render/Material.cpp
     source/render/Mesh.cpp
     source/render/RenderQueue.cpp
