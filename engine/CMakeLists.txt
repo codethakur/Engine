@@ -1,8 +1,14 @@
 cmake_minimum_required(VERSION 3.10)
-project(Engine)
-
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+
+project(Engine)
+set(ASSETS_DIR "${CMAKE_SOURCE_DIR}/assets")
+configure_file(
+    ${PROJECT_SOURCE_DIR}/config.h.in
+    ${PROJECT_BINARY_DIR}/config.h
+)
 
 # =========================
 # Engine library
@@ -22,6 +28,7 @@ add_library(${PROJECT_NAME} STATIC
     source/Scene/components/MeshComponent.cpp
     source/Scene/components/CamraComponent.cpp
     source/Scene/components/PlayerControllerComponent.cpp
+    source/io/FileSystem.cpp
 
 )
 
@@ -52,6 +59,8 @@ add_subdirectory(thirdparty/glfw-3.4)
 # OpenGL (portable)
 # =========================
 find_package(OpenGL REQUIRED)
+include_directories(thirdparty/stb_image)
+target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_BINARY_DIR})
 
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
@@ -59,4 +68,10 @@ target_link_libraries(${PROJECT_NAME}
         glad
     PRIVATE
         OpenGL::GL
+)
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${ASSETS_DIR}
+    ${CMAKE_BINARY_DIR}/assets
 )

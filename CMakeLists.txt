@@ -17,6 +17,9 @@ add_executable(${PROJECT_NAME}
     source/TestObject.cpp
 )
 include_directories(engine/source)
+
+include_directories(engine/thirdparty/stb_image)
+
 # Link against engine
 target_link_libraries(${PROJECT_NAME}
     Engine

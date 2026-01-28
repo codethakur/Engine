@@ -181,6 +181,11 @@ namespace eng
     {
         m_CurrentScreen.reset(scene);
     }
+    FileSystem& Engine::GetFileSystem()
+    {
+       return m_fileSystem;
+    }
+    
     Scene* Engine::GetScene()
     {
         return m_CurrentScreen.get();
