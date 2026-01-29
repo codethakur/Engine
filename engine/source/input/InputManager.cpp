@@ -17,6 +17,7 @@ namespace eng
             return false;
         }
         return m_keys[key];
+        
     }
     void InputManager::SetMouseButtonPressed(int button, bool pressed)
     {
@@ -30,7 +31,7 @@ namespace eng
         if(button<0 || button>=static_cast<int>(m_mouseKeys.size())){
             return false;
         }
-        m_mouseKeys[button];
+        return m_mouseKeys[button];
     }
     void  InputManager::SetMousePositionOld(const glm::vec2& pos)
     {

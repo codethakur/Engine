@@ -1,5 +1,6 @@
 #pragma once
 #include <glad/glad.h>
+#include<memory>
 namespace eng
 {
     class Texture
@@ -7,6 +8,8 @@ namespace eng
     public:
         Texture(int width, int height, int numChannels, unsigned char* data);
         GLuint GetID() const;
+        static std::shared_ptr<Texture>Load(const std::string& path);
+        void Init(int width, int height, int numChannels, unsigned char* data);
         ~Texture();
     private:
         int m_width = 0;

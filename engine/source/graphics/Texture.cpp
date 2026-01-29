@@ -1,9 +1,21 @@
 #include"Texture.h"
+#include"Engine.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include<stb_image.h>
 
 namespace eng
 {
     Texture::Texture(int width, int height, int numChannels, unsigned char* data)
         :m_width(width), m_height(height), m_numChannel(numChannels)
+    {
+        Init(width, height, numChannels, data);
+    }
+    GLuint Texture::GetID() const
+    {
+        return m_textureID;
+    }
+    void Texture::Init(int width, int height, int numChannels, unsigned char* data)
     {
         glGenTextures(1, &m_textureID);
         glBindTexture(GL_TEXTURE_2D, m_textureID);
@@ -18,9 +30,26 @@ namespace eng
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
     }
-    GLuint Texture::GetID() const
+    std::shared_ptr<Texture>Texture::Load(const std::string& path)
     {
-        return m_textureID;
+        int width, height, numChannels;
+        auto& fs = Engine::GetInstance().GetFileSystem();
+        auto fullPath = fs.GetAssetFolder()/"brick.png";
+        if(!std::filesystem::exists(fullPath))
+        {
+            return nullptr;
+        }
+        std::shared_ptr<Texture>result;
+        unsigned char* data = stbi_load(fullPath.string().c_str(),&width, &height, &numChannels, 0);
+        std::shared_ptr<eng::Texture>texture;
+        if(data)
+        {
+            result = std::make_shared<Texture>(width, height, numChannels, data);
+            stbi_image_free(data);
+        }
+        return result;
+        
+
     }
     Texture::~Texture()
     {
