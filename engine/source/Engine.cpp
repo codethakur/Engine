@@ -32,7 +32,7 @@ namespace eng
         }
         else if (action == GLFW_RELEASE)
         {
-            inputManager.SetKeyPressed(button, false);
+            inputManager.SetMouseButtonPressed(button, false);
         }
     }
     void currsorPositionCallback(GLFWwindow* window, double xpos, double ypos)
@@ -112,7 +112,6 @@ namespace eng
             auto now =  std::chrono::high_resolution_clock::now();  
             float deltaTime = std::chrono::duration<float>(now - m_lastTimePoint).count();
             m_lastTimePoint = now;
-
             m_application->Update(deltaTime);
 
             m_graphicsAPI.SetClearColor(0.25f, 0.25f, 0.25f, 1.0f);
