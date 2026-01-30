@@ -34,7 +34,7 @@ namespace eng
     {
         int width, height, numChannels;
         auto& fs = Engine::GetInstance().GetFileSystem();
-        auto fullPath = fs.GetAssetFolder()/"brick.png";
+        auto fullPath = fs.GetAssetFolder()/path;
         if(!std::filesystem::exists(fullPath))
         {
             return nullptr;

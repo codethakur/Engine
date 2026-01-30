@@ -57,13 +57,13 @@ namespace eng
             position -= front * m_moveSpeed *deltaTime;
 
 
-        // glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+        glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 
-        // if (inputManager.IsKeyPressed(GLFW_KEY_SPACE))
-        //     position += up * m_moveSpeed * deltaTime;
+        if (inputManager.IsKeyPressed(GLFW_KEY_SPACE))
+            position += up * m_moveSpeed * deltaTime;
 
-        // if (inputManager.IsKeyPressed(GLFW_KEY_LEFT_CONTROL))
-        //     position -= up * m_moveSpeed * deltaTime;
+        if (inputManager.IsKeyPressed(GLFW_KEY_LEFT_CONTROL))
+            position -= up * m_moveSpeed * deltaTime;
             
         #if 0
             position.x = std::clamp(position.x, -0.5f, 0.5f);

@@ -38,8 +38,8 @@ namespace eng
         Scene* GetScene();
         FileSystem& GetFileSystem();
 
-        private : std::unique_ptr<Application>
-                      m_application;
+    private : 
+        std::unique_ptr<Application> m_application;
         std::chrono::steady_clock::time_point m_lastTimePoint;
         GLFWwindow* m_window = nullptr;
         InputManager m_inputManager;

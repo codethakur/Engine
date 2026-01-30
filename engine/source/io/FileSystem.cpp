@@ -65,7 +65,7 @@ namespace eng
     {
         return LoadFile(GetAssetFolder()/relativePath);
     }
-    std::string FileSystem::LoadAssetText(const std::string& relativePath)
+    std::string FileSystem::LoadAssetFileText(const std::string& relativePath)
     {
         auto buffer = LoadAssetFile(relativePath);
         return std::string(buffer.begin(), buffer.end());

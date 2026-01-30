@@ -12,6 +12,6 @@ namespace eng
 
         std::vector<char> LoadFile(const std::filesystem::path &path);
         std::vector<char>LoadAssetFile(const std::string& relativePath);
-        std::string LoadAssetText(const std::string& relativePath);
+        std::string LoadAssetFileText(const std::string& relativePath);
     };
 }

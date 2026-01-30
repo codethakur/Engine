@@ -20,23 +20,8 @@ bool Game::Init()
      
     m_scene->CreateObject<TestObject>("TestObject");
 
-    std::string vertexShaderSource = fs.LoadAssetText("shaders/vertex.glsl");
-    std::string fragmentShaderSource = fs.LoadAssetText("shaders/fragment.glsl");
 
-    if (vertexShaderSource.empty() || fragmentShaderSource.empty())
-    {
-        std::cerr << "Shader source is empty. Check asset paths.\n";
-        return false;
-    }
-
-
-    auto& graphicsAPI = eng::Engine::GetInstance().GetGraphicsAPI();
-    auto shaderProgram = graphicsAPI.CreateShaderProgram(vertexShaderSource, fragmentShaderSource);
-    
-
-    auto material = std::make_shared<eng::Material>();
-    material->SetShaderProgram(shaderProgram);
-    material->SetParam("brickTexture", texture);
+    auto material = eng::Material::Load("materials/brick.mat");
 
     std::vector<float> vertices =
     {
@@ -137,7 +122,7 @@ bool Game::Init()
 
     auto objectB = m_scene->CreateObject("ObjectB");
     objectB->AddComponent(new eng::MeshComponent(material, mesh));
-    objectB->SetPosition(glm::vec3(0.0f, 2.0f, 2.0f));
+    objectB->SetPosition(glm::vec3(0.0f, -2.0f, 2.0f));
     objectB->SetRotation(glm::vec3(0.0f, 2.0f, 0.0f));
 
     auto objectC = m_scene->CreateObject("ObjectC");
@@ -146,7 +131,11 @@ bool Game::Init()
     objectC->SetRotation(glm::vec3(1.0f, 0.0f, 1.0f));
     objectC->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
 
-
+    auto objectD = m_scene->CreateObject("ObjectD");
+    objectD->AddComponent(new eng::MeshComponent(material, mesh));
+    objectD->SetPosition(glm::vec3(2.0f, 1.0f, 0.0f));
+    objectD->SetRotation(glm::vec3(1.0f, 0.0f, 1.0f));
+    objectD->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
 
     eng::Engine::GetInstance().SetScene(m_scene);
 
