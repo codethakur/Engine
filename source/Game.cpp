@@ -118,11 +118,11 @@ bool Game::Init()
 
     auto objectA = m_scene->CreateObject("ObjectA");
     objectA->AddComponent(new eng::MeshComponent(material, mesh));
-    objectA->SetPosition(glm::vec3(0.0f, 2.0f, 0.0f));
+    objectA->SetPosition(glm::vec3(1.0f, 2.0f, -5.0f));
 
     auto objectB = m_scene->CreateObject("ObjectB");
     objectB->AddComponent(new eng::MeshComponent(material, mesh));
-    objectB->SetPosition(glm::vec3(0.0f, -2.0f, 2.0f));
+    objectB->SetPosition(glm::vec3(0.0f, 2.0f, 2.0f));
     objectB->SetRotation(glm::vec3(0.0f, 2.0f, 0.0f));
 
     auto objectC = m_scene->CreateObject("ObjectC");
@@ -136,6 +136,16 @@ bool Game::Init()
     objectD->SetPosition(glm::vec3(2.0f, 1.0f, 0.0f));
     objectD->SetRotation(glm::vec3(1.0f, 0.0f, 1.0f));
     objectD->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
+
+    auto suzzanMesh = eng::Mesh::Load("Model/Suzanne.gltf");
+    auto suzzanMaterial = eng::Material::Load("Materials/suzanne.gltf");
+
+    auto suzzaneObj = m_scene->CreateObject("suzzane");
+    suzzaneObj->AddComponent(new eng::MeshComponent(material, suzzanMesh));
+    suzzaneObj->SetPosition(glm::vec3(0.0, 0.0f, -5.0f));
+    suzzaneObj->SetScale(glm::vec3(0.3f));
+
+
 
     eng::Engine::GetInstance().SetScene(m_scene);
 

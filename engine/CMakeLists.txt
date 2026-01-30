@@ -62,6 +62,7 @@ add_subdirectory(thirdparty/glfw-3.4)
 find_package(OpenGL REQUIRED)
 include_directories(thirdparty/stb_image)
 include_directories(thirdparty/json)
+include_directories(thirdparty/cgltf)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_BINARY_DIR})
 
 target_link_libraries(${PROJECT_NAME}
