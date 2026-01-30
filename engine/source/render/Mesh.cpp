@@ -69,7 +69,7 @@ namespace eng
         }
         else
         {
-            glDrawArrays(GL_TRIANGLES, 0, m_vertexCount);
+            glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei> (m_vertexCount));
         }
     }
     std::shared_ptr<Mesh> Mesh::Load(const std::string &path)
@@ -94,6 +94,14 @@ namespace eng
         cgltf_options options = {};
         cgltf_data *data = nullptr;
         cgltf_result res = cgltf_parse(&options, contents.data(), contents.size(), &data);
+        if (res != cgltf_result_success)
+        {
+            //cgltf_free(data);
+            return nullptr;
+        }
+        auto fullPath = Engine::GetInstance().GetFileSystem().GetAssetFolder() / path;
+
+        res = cgltf_load_buffers(&options, data, fullPath.remove_filename().string().c_str());
         if (res != cgltf_result_success)
         {
             cgltf_free(data);

@@ -137,14 +137,12 @@ bool Game::Init()
     objectD->SetRotation(glm::vec3(1.0f, 0.0f, 1.0f));
     objectD->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
 
-    auto suzzanMesh = eng::Mesh::Load("Model/Suzanne.gltf");
-    auto suzzanMaterial = eng::Material::Load("Materials/suzanne.gltf");
+    auto suzanneMesh = eng::Mesh::Load("models/Suzanne.gltf");
+    auto suzanneMaterial = eng::Material::Load("materials/suzanne.mat");
 
-    auto suzzaneObj = m_scene->CreateObject("suzzane");
-    suzzaneObj->AddComponent(new eng::MeshComponent(material, suzzanMesh));
-    suzzaneObj->SetPosition(glm::vec3(0.0, 0.0f, -5.0f));
-    suzzaneObj->SetScale(glm::vec3(0.3f));
-
+    auto suzanneObj = m_scene->CreateObject("Suzanne");
+    suzanneObj->AddComponent(new eng::MeshComponent(suzanneMaterial, suzanneMesh));
+    suzanneObj->SetPosition(glm::vec3(0.0f, 0.0f, -5.0f));
 
 
     eng::Engine::GetInstance().SetScene(m_scene);
