@@ -56,15 +56,13 @@ namespace eng
         else if (inputManager.IsKeyPressed(GLFW_KEY_S))
             position -= front * m_moveSpeed *deltaTime;
 
-
         glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 
         if (inputManager.IsKeyPressed(GLFW_KEY_SPACE))
             position += up * m_moveSpeed * deltaTime;
 
-        if (inputManager.IsKeyPressed(GLFW_KEY_LEFT_CONTROL))
+        else if (inputManager.IsKeyPressed(GLFW_KEY_C))
             position -= up * m_moveSpeed * deltaTime;
-            
         #if 0
             position.x = std::clamp(position.x, -0.5f, 0.5f);
             position.y = std::clamp(position.y, -0.5f, 0.5f);

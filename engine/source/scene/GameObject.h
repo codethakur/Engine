@@ -1,12 +1,11 @@
 #pragma once
+#include "scene/Component.h"
 #include <string>
 #include <vector>
 #include <memory>
 #include<glm/vec3.hpp>
 #include<glm/gtc/quaternion.hpp>
 #include<glm/mat4x4.hpp>
-
-#include<scene/Component.h>
 
 namespace eng
 {
@@ -36,6 +35,7 @@ namespace eng
             return nullptr;
         }
         const glm::vec3 GetPosition() const;
+        glm::vec3 GetWorldPosition() const;
         void SetPosition(const glm::vec3& position);
 
         const glm::quat GetRotation() const;

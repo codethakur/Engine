@@ -24,12 +24,14 @@ add_library(${PROJECT_NAME} STATIC
     source/render/Mesh.cpp
     source/render/RenderQueue.cpp
     source/Scene/GameObject.cpp
-    source/Scene/Scene.cpp
+    source/scene/Scene.cpp
     source/Scene/Component.cpp
     source/Scene/components/MeshComponent.cpp
     source/Scene/components/CamraComponent.cpp
     source/Scene/components/PlayerControllerComponent.cpp
     source/io/FileSystem.cpp
+    source/scene/components/LightComponent.cpp
+    source/Common.h
 
 )
 

@@ -1,8 +1,12 @@
 #pragma once
-#include"scene/GameObject.h"
 #include<string>
 #include<vector>
 #include<memory>
+
+#include"scene/GameObject.h"
+#include"Common.h"
+
+
 namespace eng
 {
     class Scene
@@ -24,6 +28,10 @@ namespace eng
         bool  SetParent(GameObject* obj, GameObject* parent);
         void SetMainCamera(GameObject* camera);
         GameObject*GetMainCamera() const;
+        std::vector<LightData> CollectLights();
+
+    private:
+         void CollectLightsRecursive(GameObject* obj, std::vector<LightData>& out);
     private:
         std::vector<std::unique_ptr<GameObject>>m_objects;
         GameObject* m_mainCamera = nullptr;

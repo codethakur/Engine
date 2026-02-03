@@ -23,99 +23,8 @@ bool Game::Init()
 
     auto material = eng::Material::Load("materials/brick.mat");
 
-    std::vector<float> vertices =
-    {
-        // Front face
-        0.5f,  0.5f,  0.5f,  1.0f,0.0f,0.0f,  1.0f, 1.0f,
-        -0.5f, 0.5f,  0.5f,  0.0f,1.0f,0.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f, 0.5f,  0.0f,0.0f,1.0f,  0.0f, 0.0f,
-        0.5f,  -0.5f, 0.5f,  1.0f,1.0f,0.0f,  1.0f, 0.0f,
- 
-        // Top face 
-        0.5f,  0.5f, -0.5f,  1.0f,0.0f,0.0f,  1.0f, 1.0f,
-        -0.5f, 0.5f, -0.5f,  0.0f,1.0f,0.0f,  0.0f, 1.0f,
-        -0.5f, 0.5f, 0.5f,   0.0f,0.0f,1.0f,  0.0f, 0.0f,
-        0.5f,  0.5f, 0.5f,   1.0f,1.0f,0.0f,  1.0f, 0.0f,
-
-        // Right face
-        0.5f,  0.5f, -0.5f,  1.0f,0.0f,0.0f,  1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,1.0f,0.0f,  0.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,  0.0f,0.0f,1.0f,  0.0f, 0.0f,
-        0.5f, -0.5f, -0.5f,  1.0f,1.0f,0.0f,  1.0f, 0.0f,
-
-        // Left face
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,0.0f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,0.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,1.0f,  0.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  1.0f, 1.0f,0.0f,  1.0f, 0.0f,
-
-        // Bottom face
-        0.5f,  -0.5f,  0.5f,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
-        0.5f,  -0.5f, -0.5f,  1.0f, 1.0f, 0.0f,  1.0f, 0.0f,
-
-        // Back face
-        -0.5f, 0.5f, -0.5f,  1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
-        0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,   0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
-        -0.5f,-0.5f, -0.5f,  1.0f, 1.0f, 0.0f,   1.0f, 0.0f
-    };
-
-    std::vector<unsigned int> indices =
-    {
-        // front
-        0, 1, 2,
-        0, 2, 3,
-
-        // top
-        4, 5, 6,
-        4, 6, 7,
-
-        // right
-        8, 9, 10,
-        8, 10, 11,
-
-        // left
-        12, 13, 14,
-        12, 14, 15,
-
-        // bottom
-        16, 17, 18,
-        16, 18, 19,
-
-        // back
-        20, 21, 22,
-        20, 22, 23
-    };
-    eng::VertexLayout vertexLayout;
-
-    // Postion
-    vertexLayout.elements.push_back({
-        0, 
-        3, 
-        GL_FLOAT,
-        0
-        });
-    // Color
-    vertexLayout.elements.push_back({
-        1,
-        3,
-        GL_FLOAT,
-        sizeof(float) * 3
-        });
-    //uv
-    vertexLayout.elements.push_back({
-        2,
-        2,
-        GL_FLOAT,
-        sizeof(float) * 6,
-
-    });
-    vertexLayout.stride = sizeof(float) * 8; 
-
-    auto mesh = std::make_shared<eng::Mesh>(vertexLayout, vertices, indices);
-
+    
+    auto mesh = eng::Mesh::CreateCube();
     auto objectA = m_scene->CreateObject("ObjectA");
     objectA->AddComponent(new eng::MeshComponent(material, mesh));
     objectA->SetPosition(glm::vec3(1.0f, 2.0f, -5.0f));
@@ -143,6 +52,13 @@ bool Game::Init()
     auto suzanneObj = m_scene->CreateObject("Suzanne");
     suzanneObj->AddComponent(new eng::MeshComponent(suzanneMaterial, suzanneMesh));
     suzanneObj->SetPosition(glm::vec3(0.0f, 0.0f, -5.0f));
+
+    auto light = m_scene->CreateObject("Light");
+    auto lightComp = new eng::LightComponent();
+    lightComp->SetColor(glm::vec3(1.0f));
+    light->AddComponent(lightComp);
+    light->SetPosition(glm::vec3(-5.0f, -5.0f, 5.0f));
+
 
 
     eng::Engine::GetInstance().SetScene(m_scene);

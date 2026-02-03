@@ -16,3 +16,5 @@
 #include"scene/components/CamraComponent.h"
 #include"scene/components/PlayerControllerComponent.h"
 #include "io/FileSystem.h"
+#include"scene/components/LightComponent.h"
+#include"Common.h"
