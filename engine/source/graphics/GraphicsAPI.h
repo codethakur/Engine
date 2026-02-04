@@ -18,6 +18,7 @@ namespace eng
         std::shared_ptr<ShaderProgram> CreateShaderProgram(
         const std::string& vertexPath,
         const std::string& fragmentPath);
+        const std::shared_ptr<ShaderProgram>& GetDefaultShaderProgram();
         GLuint CreateVertexBuffer(const std::vector<float>vertices);
         GLuint CreateIndexBuffer(const std::vector<uint32_t>indeces);
 
@@ -28,5 +29,7 @@ namespace eng
         void BindMaterial(Material* material);
         void BindMesh(Mesh* mesh);
         void DrawMesh(Mesh* mesh);
+    private:
+    std::shared_ptr<ShaderProgram>m_defaultShaderProgram;
     };
 }

@@ -1,8 +1,7 @@
 #include "render/Mesh.h"
 #include "graphics/GraphicsAPI.h"
 #include "Engine.h"
-#define CGLTF_IMPLEMENTATION
-#include <cgltf.h>
+
 
 namespace eng
 {
@@ -177,7 +176,7 @@ namespace eng
         return result;
 
     }
-    
+    #if 0
     std::shared_ptr<Mesh> Mesh::Load(const std::string &path)
     {
         auto contents = Engine::GetInstance().GetFileSystem().LoadAssetFileText(path);
@@ -337,4 +336,5 @@ namespace eng
         cgltf_free(data);
         return result;
     }
+    #endif
 }

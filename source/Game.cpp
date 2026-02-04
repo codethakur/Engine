@@ -11,7 +11,8 @@ bool Game::Init()
     auto texture = eng::Texture::Load("brick.png");
 
     m_scene = new eng::Scene();
-
+    eng::Engine::GetInstance().SetScene(m_scene);
+    
     auto camera = m_scene->CreateObject("Camera");
     camera->AddComponent(new eng::CamraComponent());
     camera->SetPosition(glm::vec3(0.0f, 0.0f, 2.0f));
@@ -46,22 +47,26 @@ bool Game::Init()
     objectD->SetRotation(glm::vec3(1.0f, 0.0f, 1.0f));
     objectD->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
 
-    auto suzanneMesh = eng::Mesh::Load("models/Suzanne.gltf");
+    /* auto suzanneMesh = eng::Mesh::Load("models/Suzanne.gltf");
     auto suzanneMaterial = eng::Material::Load("materials/suzanne.mat");
 
     auto suzanneObj = m_scene->CreateObject("Suzanne");
     suzanneObj->AddComponent(new eng::MeshComponent(suzanneMaterial, suzanneMesh));
+    suzanneObj->SetPosition(glm::vec3(0.0f, 0.0f, -5.0f));*/
+
+    auto suzanneObj = eng::GameObject::LoadGLTF("models/Suzanne.gltf");
     suzanneObj->SetPosition(glm::vec3(0.0f, 0.0f, -5.0f));
+
 
     auto light = m_scene->CreateObject("Light");
     auto lightComp = new eng::LightComponent();
     lightComp->SetColor(glm::vec3(1.0f));
     light->AddComponent(lightComp);
-    light->SetPosition(glm::vec3(-5.0f, -5.0f, 5.0f));
+    light->SetPosition(glm::vec3(-5.0f, 5.0f, 5.0f));
 
 
 
-    eng::Engine::GetInstance().SetScene(m_scene);
+    
 
     return true;
 }
