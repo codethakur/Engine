@@ -306,7 +306,7 @@ namespace eng
                             if (texture->image->uri)
                             {
                                 auto path = folder / std::string(texture->image->uri);
-                                auto texture = Texture::Load(path.string());
+                                auto texture = Engine::GetInstance().GetTextureManager().GetOrLoadTexture(path.string());
                                 mat->SetParam("baseColorTexture", texture);
                             }
                         }
@@ -320,7 +320,7 @@ namespace eng
                             if (texture->image->uri)
                             {
                                 auto path = folder / std::string(texture->image->uri);
-                                auto texture = Texture::Load(path.string());
+                                auto texture = Engine::GetInstance().GetTextureManager().GetOrLoadTexture(path.string());
                                 mat->SetParam("baseColorTexture", texture);
                             }
                         }

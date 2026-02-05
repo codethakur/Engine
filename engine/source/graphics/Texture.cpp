@@ -19,8 +19,16 @@ namespace eng
     {
         glGenTextures(1, &m_textureID);
         glBindTexture(GL_TEXTURE_2D, m_textureID);
+        
+        GLint interalFormat = GL_RGB;
+        GLenum format = GL_RGB;
+        if(numChannels == 4)
+        {
+            interalFormat = GL_RGBA;
+            format = GL_RGBA;
+        }
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, interalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -48,9 +56,19 @@ namespace eng
             stbi_image_free(data);
         }
         return result;
-        
-
     }
+    std::shared_ptr<Texture> TextureManger::GetOrLoadTexture(const std::string& path)
+    {
+        auto it = m_textures.find(path);
+        if(it != m_textures.end())
+        {
+            return it->second;
+        }
+        auto texture = Texture::Load(path);
+        m_textures[path] = texture;
+        return texture;
+    }
+
     Texture::~Texture()
     {
         if(m_textureID>0)

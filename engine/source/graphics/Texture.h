@@ -1,6 +1,8 @@
 #pragma once
 #include <glad/glad.h>
 #include<memory>
+#include<unordered_map>
+#include <string>   
 namespace eng
 {
     class Texture
@@ -17,5 +19,12 @@ namespace eng
         int m_numChannel = 0;
         GLuint m_textureID = 0;
 
+    };
+    class  TextureManger
+    {
+    public:
+        std::shared_ptr<Texture>GetOrLoadTexture(const std::string& path);
+    private:
+        std::unordered_map<std::string, std::shared_ptr<Texture>>m_textures;
     };
 }

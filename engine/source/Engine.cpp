@@ -133,6 +133,7 @@ namespace eng
                     {
                         cameraData.viewMatrix = cameraComponent->GetViewMatrix();
                         cameraData.projectionMatrix = cameraComponent->GetProjectMatrix(aspect);
+                        cameraData.position = cameraObject->GetWorldPosition();
                     }
                 }
                 lights = m_CurrentScreen->CollectLights(); 
@@ -176,6 +177,10 @@ namespace eng
     RenderQueue& Engine::GetRenderQueue()
     {
         return m_renderQueue;
+    }
+    TextureManger& Engine::GetTextureManager()
+    {
+        return m_textureManager;
     }
 
     void Engine::SetScene(Scene* scene)
