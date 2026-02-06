@@ -31,6 +31,7 @@ add_library(${PROJECT_NAME} STATIC
     source/Scene/components/PlayerControllerComponent.cpp
     source/io/FileSystem.cpp
     source/scene/components/LightComponent.cpp
+    source/scene/components/AnimationComponent.cpp
     source/Common.h
 
 )

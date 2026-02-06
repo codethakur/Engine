@@ -17,4 +17,5 @@
 #include"scene/components/PlayerControllerComponent.h"
 #include "io/FileSystem.h"
 #include"scene/components/LightComponent.h"
+#include"scene/components/AnimationComponent.h"
 #include"Common.h"
