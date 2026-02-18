@@ -32,6 +32,7 @@ add_library(${PROJECT_NAME} STATIC
     source/io/FileSystem.cpp
     source/scene/components/LightComponent.cpp
     source/scene/components/AnimationComponent.cpp
+    source/physics/physicsManager.cpp
     source/Common.h
 
 )
@@ -68,10 +69,21 @@ include_directories(thirdparty/json)
 include_directories(thirdparty/cgltf)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_BINARY_DIR})
 
+# Include Bullet as a subdirectory
+option(BUILD_UNITTESTS OFF)
+option(BUILD_BULLET2_DEMOS OFF)
+option(BUILD_EXTRAS OFF)
+option(BUILD_SHARED_LIBS OFF)
+add_subdirectory(thirdparty/bullet3-3.25)
+target_include_directories(${PROJECT_NAME} PRIVATE thirdparty/bullet3-3.25/src)
+
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
         glfw
         glad
+        LinearMath
+        BulletCollision
+        BulletDynamics
     PRIVATE
         OpenGL::GL
 )

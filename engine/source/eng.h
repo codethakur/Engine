@@ -19,3 +19,4 @@
 #include"scene/components/LightComponent.h"
 #include"scene/components/AnimationComponent.h"
 #include"Common.h"
+#include"physics/physicsManager.h"

@@ -26,7 +26,7 @@ compile_commands.json
 *.a
 *.lib
 Game
-
+engine/thirdparty/bullet3-3.25/
 # =========================
 # Object files
 # =========================
