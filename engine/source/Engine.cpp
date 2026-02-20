@@ -95,7 +95,9 @@ namespace eng
         int fbWidth, fbHeight;
         glfwGetFramebufferSize(m_window, &fbWidth, &fbHeight);
         glViewport(0, 0, fbWidth, fbHeight);
+
         m_graphicsAPI.Init();
+        m_physicsManager.Init();
         return m_application->Init();
     }
 
@@ -112,6 +114,7 @@ namespace eng
             auto now =  std::chrono::high_resolution_clock::now();  
             float deltaTime = std::chrono::duration<float>(now - m_lastTimePoint).count();
             m_lastTimePoint = now;
+            m_physicsManager.Update(deltaTime);
             m_application->Update(deltaTime);
 
             m_graphicsAPI.SetClearColor(0.25f, 0.25f, 0.25f, 1.0f);
@@ -182,7 +185,10 @@ namespace eng
     {
         return m_textureManager;
     }
-
+    PhysicsManager& Engine::GetPhysicsManager()
+    {
+        return m_physicsManager;
+    }
     void Engine::SetScene(Scene* scene)
     {
         m_CurrentScreen.reset(scene);

@@ -28,11 +28,14 @@ add_library(${PROJECT_NAME} STATIC
     source/Scene/Component.cpp
     source/Scene/components/MeshComponent.cpp
     source/Scene/components/CamraComponent.cpp
+    source/scene/components/PhysicsComponent.cpp
     source/Scene/components/PlayerControllerComponent.cpp
     source/io/FileSystem.cpp
     source/scene/components/LightComponent.cpp
     source/scene/components/AnimationComponent.cpp
     source/physics/physicsManager.cpp
+    source/physics/Collider.cpp
+    source/physics/RigidBody.cpp
     source/Common.h
 
 )
@@ -42,6 +45,7 @@ target_include_directories(${PROJECT_NAME}
         ${CMAKE_CURRENT_SOURCE_DIR}/source
         ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glad/include
         ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glm
+       ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/bullet3/src
 )
 
 # =========================
@@ -69,13 +73,17 @@ include_directories(thirdparty/json)
 include_directories(thirdparty/cgltf)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_BINARY_DIR})
 
-# Include Bullet as a subdirectory
-option(BUILD_UNITTESTS OFF)
-option(BUILD_BULLET2_DEMOS OFF)
-option(BUILD_EXTRAS OFF)
-option(BUILD_SHARED_LIBS OFF)
-add_subdirectory(thirdparty/bullet3-3.25)
-target_include_directories(${PROJECT_NAME} PRIVATE thirdparty/bullet3-3.25/src)
+# ---- Bullet configuration ----
+set(BUILD_BULLET2_DEMOS OFF CACHE BOOL "" FORCE)
+set(BUILD_CPU_DEMOS OFF CACHE BOOL "" FORCE)
+set(BUILD_OPENGL3_DEMOS OFF CACHE BOOL "" FORCE)
+set(BUILD_UNIT_TESTS OFF CACHE BOOL "" FORCE)
+set(BUILD_EXTRAS OFF CACHE BOOL "" FORCE)
+set(BUILD_BULLET3 OFF CACHE BOOL "" FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+
+add_subdirectory(thirdparty/bullet3)
+
 
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
@@ -83,7 +91,7 @@ target_link_libraries(${PROJECT_NAME}
         glad
         LinearMath
         BulletCollision
-        BulletDynamics
+        BulletDynamics  
     PRIVATE
         OpenGL::GL
 )

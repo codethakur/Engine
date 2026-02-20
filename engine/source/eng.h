@@ -18,5 +18,7 @@
 #include "io/FileSystem.h"
 #include"scene/components/LightComponent.h"
 #include"scene/components/AnimationComponent.h"
+#include"scene/components/PhysicsComponent.h"
 #include"Common.h"
 #include"physics/physicsManager.h"
+#include"physics/RigidBody.h"

@@ -4,6 +4,7 @@
 #include"graphics/Texture.h"
 #include "render/RenderQueue.h"
 #include "scene/Scene.h"
+#include"physics/physicsManager.h"
 #include <memory>
 #include <chrono>
 #include "io/FileSystem.h"
@@ -36,6 +37,7 @@ namespace eng
         GraphicsAPI&  GetGraphicsAPI();
         RenderQueue&  GetRenderQueue();
         TextureManger& GetTextureManager();
+        PhysicsManager& GetPhysicsManager();
 
         void SetScene(Scene* scene);
         Scene* GetScene();
@@ -50,6 +52,7 @@ namespace eng
         RenderQueue m_renderQueue;
         FileSystem m_fileSystem;
         TextureManger m_textureManager;
+        PhysicsManager m_physicsManager;
         std::unique_ptr<Scene> m_CurrentScreen;
     };
 }
