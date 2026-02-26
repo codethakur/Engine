@@ -28,11 +28,12 @@ namespace eng
 		glm::vec3 GetPosition() const;
 		void SetRotation(const glm::quat& rotation);
 		glm::quat GetRotation() const;
+        
 
     private:
-    std::unique_ptr<btRigidBody>m_body;
+        std::unique_ptr<btRigidBody>m_body;
         BodyType m_type = BodyType::Static;
-       std::shared_ptr<Collider> m_collider;
+        std::shared_ptr<Collider> m_collider;
         float m_mass = 0.0f;
         float m_friction = 0.05f;
         bool m_addedToWorld = false;

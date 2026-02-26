@@ -98,4 +98,6 @@ namespace eng
         const auto& rot = m_body->getWorldTransform().getRotation();
 		return glm::quat(rot.w(), rot.x(), rot.y(), rot.z());
     }
+
+    
 }

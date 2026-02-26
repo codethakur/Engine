@@ -22,3 +22,4 @@
 #include"Common.h"
 #include"physics/physicsManager.h"
 #include"physics/RigidBody.h"
+#include"physics/KinematicCharacterController.h"

@@ -50,6 +50,7 @@ namespace eng
         void SetClip(AnimationClip *clip);
         void RegisterClip(const std::string &name, const std::shared_ptr<AnimationClip> &clip);
         void Play(const std::string &name, bool loop = true);
+        bool IsPlaying() const;
 
     private:
         void BuildBindings();

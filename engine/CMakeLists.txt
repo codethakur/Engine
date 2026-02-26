@@ -36,6 +36,7 @@ add_library(${PROJECT_NAME} STATIC
     source/physics/physicsManager.cpp
     source/physics/Collider.cpp
     source/physics/RigidBody.cpp
+    source/physics/KinematicCharacterController.cpp
     source/Common.h
 
 )

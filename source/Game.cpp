@@ -1,5 +1,6 @@
 #include"Game.h"
 #include"TestObject.h"
+#include"Player.h"
 #include<iostream>
 #include<memory>
 #include <filesystem>
@@ -12,12 +13,10 @@ bool Game::Init()
 
     m_scene = new eng::Scene();
     eng::Engine::GetInstance().SetScene(m_scene);
-    
-    auto camera = m_scene->CreateObject("Camera");
-    camera->AddComponent(new eng::CamraComponent());
-    camera->SetPosition(glm::vec3(0.0f, 0.0f, 2.0f));
-    camera->AddComponent(new eng::PlayerControllerComponent());
-    m_scene->SetMainCamera(camera);
+    auto player = m_scene->CreateObject<Player>("PPlayer");
+    player->Init();
+
+    m_scene->SetMainCamera(player);
      
     m_scene->CreateObject<TestObject>("TestObject");
 
@@ -59,26 +58,7 @@ bool Game::Init()
 
     
     
-    auto gun = eng::GameObject::LoadGLTF("models/sten_gunmachine_carbine/scene.gltf");
-    gun->SetParent(camera);
-    gun->SetPosition(glm::vec3(0.75f, -0.5f, -0.75f));
-    gun->SetScale(glm::vec3(-1.0f, 1.0f, 1.0f));
-    
-    if (auto anim = gun->GetComponent<eng::AnimationComponent>())
-    {
-        if (auto bullet = gun->FindChildByName("bullet_33"))
-        {
-            bullet->SetActive(false);
-        }
-
-        if (auto fire = gun->FindChildByName("BOOM_35"))
-        {
-            fire->SetActive(false);
-        }
-
-        anim->Play("shoot", false);
-    }
-
+   
     
     auto light = m_scene->CreateObject("Light");
     auto lightComp = new eng::LightComponent();
@@ -96,18 +76,16 @@ bool Game::Init()
     auto groundCollider = std::make_shared<eng::BoxCollider>(groundExtents);
     auto groundBody = std::make_shared<eng::RigidBody>(eng::BodyType::Static, groundCollider, 0.0f, 0.5f);
     ground->AddComponent(new eng::PhysicsComponent(groundBody));
-
     auto boxObj = m_scene->CreateObject("FallingBox");
     boxObj->AddComponent(new eng::MeshComponent(material, mesh));
     boxObj->SetPosition(glm::vec3(0.0f, 2.0f, 2.0f));
     boxObj->SetRotation(glm::quat(glm::vec3(1.0f, 2.0f, 0.0f)));
     auto boxCollider = std::make_shared<eng::BoxCollider>(glm::vec3(1.0f));
-    auto boxBody = std::make_shared<eng::RigidBody>(eng::BodyType::Dynamic, boxCollider, 5.0f, 0.5f);
+    auto boxBody = std::make_shared<eng::RigidBody>(eng::BodyType::Dynamic, boxCollider, 5.0f, 0.9f);
     boxObj->AddComponent(new eng::PhysicsComponent(boxBody));
 
-    camera->SetPosition(glm::vec3(0.0f, 1.0f, 7.0f));
-
-    
+  
+    //camera->SetPosition(glm::vec3(0.0f, 1.0f, 7.0f));
 
     return true;
 }
@@ -115,6 +93,7 @@ bool Game::Init()
 void Game::Update(float deltaTime)
 {
     m_scene->Update(deltaTime); 
+    
 }
 
 void Game::Destroy()
