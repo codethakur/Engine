@@ -2,7 +2,7 @@
 #include"Application.h"
 #include "input/InputManager.h"
 #include"scene/Component.h"
-#include"scene/components/CamraComponent.h"
+#include"scene/components/CameraComponent.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -57,6 +57,8 @@ namespace eng
             return false;
         }
         
+        Scene::RegisterTypes();
+        m_application->RegisterTypes();
         #if defined(__APPLE__)
             glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         #endif
@@ -132,7 +134,7 @@ namespace eng
             {
                 if(auto cameraObject = m_CurrentScreen->GetMainCamera()){
                     //logic for Matrices
-                    auto cameraComponent = cameraObject->GetComponent<CamraComponent>();
+                    auto cameraComponent = cameraObject->GetComponent<CameraComponent>();
                     if(cameraComponent)
                     {
                         cameraData.viewMatrix = cameraComponent->GetViewMatrix();

@@ -4,9 +4,9 @@
 
 namespace eng
 {
-    class CamraComponent : public Component
+    class CameraComponent : public Component
     {
-        COMPONENT(CamraComponent)
+        COMPONENT(CameraComponent)
 
     public:
         void Update(float deltaTime) override;

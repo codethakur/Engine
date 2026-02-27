@@ -117,15 +117,53 @@ namespace eng
     {
         m_position = position;
     }
+    void GameObject::SetWorldPosition(const glm::vec3& position)
+    {
+        if(m_parent)
+        {
+            glm::mat4 parentWorld = m_parent->GetWorldTransform();
+            glm::mat4 inversParentWorld = glm::inverse(parentWorld);
+            glm::vec4 localPosition = inversParentWorld * glm::vec4(position, 1.0f);
+            SetPosition(glm::vec3(localPosition) / localPosition.w );
+        }else
+        {
+            SetPosition(position);
+        }
+    }
     const glm::quat GameObject::GetRotation() const
     {
         return m_rotation;
+    }
+    glm::quat  GameObject::GetWorldRotation()
+    {
+        if(m_parent)
+        {
+            return m_parent->GetWorldRotation() * m_rotation;
+        }
+        else
+        {
+            return m_rotation;
+        }
     }
     void GameObject::SetRotation(const glm::quat &rotation)
     {
         m_rotation = rotation;
     }
+    void GameObject::SetWorldRotation(const glm::quat& rotation)
+    {
+        if (m_parent)
+        {
+            glm::quat parentWorldRotation = m_parent->GetWorldRotation();
+            glm::quat inversParentWorldRotation = glm::inverse(parentWorldRotation);
+            glm::quat newLocalRotation = inversParentWorldRotation * rotation;
 
+            SetRotation(newLocalRotation);
+        }
+        else
+        {
+            SetRotation(rotation);
+        }
+    }
     const glm::vec3 GameObject::GetScale() const
     {
         return m_scale;

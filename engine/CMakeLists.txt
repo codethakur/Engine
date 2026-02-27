@@ -27,7 +27,7 @@ add_library(${PROJECT_NAME} STATIC
     source/scene/Scene.cpp
     source/Scene/Component.cpp
     source/Scene/components/MeshComponent.cpp
-    source/Scene/components/CamraComponent.cpp
+    source/Scene/components/CameraComponent.cpp
     source/scene/components/PhysicsComponent.cpp
     source/Scene/components/PlayerControllerComponent.cpp
     source/io/FileSystem.cpp

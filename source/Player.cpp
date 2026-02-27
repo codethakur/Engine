@@ -4,7 +4,7 @@
 
 void Player::Init() 
 {
-    AddComponent(new eng::CamraComponent());
+    AddComponent(new eng::CameraComponent());
     SetPosition(glm::vec3(0.0f, 0.0f, 2.0f));
     AddComponent(new eng::PlayerControllerComponent());
    

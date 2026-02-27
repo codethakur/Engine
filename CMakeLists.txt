@@ -21,6 +21,7 @@ add_executable(${PROJECT_NAME}
 include_directories(engine/source)
 
 include_directories(engine/thirdparty/stb_image)
+include_directories(engine/thirdparty/json)
 
 # Link against engine
 target_link_libraries(${PROJECT_NAME}
