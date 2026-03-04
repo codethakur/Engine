@@ -33,6 +33,10 @@ add_library(${PROJECT_NAME} STATIC
     source/io/FileSystem.cpp
     source/scene/components/LightComponent.cpp
     source/scene/components/AnimationComponent.cpp
+    source/scene/components/AudioComponent.cpp
+    source/scene/components/AudioListenerComponent.cpp
+    source/audio/Audio.cpp
+    source/audio/AudioManager.cpp
     source/physics/physicsManager.cpp
     source/physics/Collider.cpp
     source/physics/RigidBody.cpp
@@ -73,6 +77,30 @@ include_directories(thirdparty/stb_image)
 include_directories(thirdparty/json)
 include_directories(thirdparty/cgltf)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_BINARY_DIR})
+#------Audio------
+add_library(miniaudio INTERFACE)
+target_include_directories(miniaudio INTERFACE thirdparty/miniaudio)
+
+if(UNIX AND NOT APPLE)
+  target_link_libraries(miniaudio INTERFACE dl pthread m)
+endif()
+
+if(WIN32)
+  target_link_libraries(miniaudio INTERFACE winmm user32 ole32)
+endif()
+
+if(APPLE)
+  find_library(COREAUDIO_FRAMEWORK CoreAudio)
+  find_library(AUDIOTOOLBOX_FRAMEWORK AudioToolbox)
+  find_library(AUDIOUNIT_FRAMEWORK AudioUnit)
+  find_library(COREFOUNDATION_FRAMEWORK CoreFoundation)
+  target_link_libraries(miniaudio INTERFACE
+    ${COREAUDIO_FRAMEWORK}
+    ${AUDIOUNIT_FRAMEWORK}
+    ${AUDIOTOOLBOX_FRAMEWORK}
+    ${COREFOUNDATION_FRAMEWORK}
+  )
+endif()
 
 # ---- Bullet configuration ----
 set(BUILD_BULLET2_DEMOS OFF CACHE BOOL "" FORCE)
@@ -93,6 +121,7 @@ target_link_libraries(${PROJECT_NAME}
         LinearMath
         BulletCollision
         BulletDynamics  
+        miniaudio
     PRIVATE
         OpenGL::GL
 )

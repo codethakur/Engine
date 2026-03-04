@@ -8,6 +8,7 @@
 #include <memory>
 #include <chrono>
 #include "io/FileSystem.h"
+#include"audio/AudioManager.h"
 
 struct GLFWwindow;
 
@@ -38,7 +39,8 @@ namespace eng
         RenderQueue&  GetRenderQueue();
         TextureManger& GetTextureManager();
         PhysicsManager& GetPhysicsManager();
-
+        AudioManager& GetAudioManager();
+        
         void SetScene(Scene* scene);
         Scene* GetScene();
         FileSystem& GetFileSystem();
@@ -53,6 +55,8 @@ namespace eng
         FileSystem m_fileSystem;
         TextureManger m_textureManager;
         PhysicsManager m_physicsManager;
+        AudioManager m_audiomManager;
         std::unique_ptr<Scene> m_CurrentScreen;
+
     };
 }

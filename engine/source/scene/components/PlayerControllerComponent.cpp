@@ -80,5 +80,13 @@ namespace eng
         m_kinematicController->Walk(move * m_moveSpeed * deltaTime);
        m_owner->SetPosition(m_kinematicController->GetPosition());
     }
+    bool PlayerControllerComponent::OnGround()const
+    {
+        if(m_kinematicController)
+        {
+            return m_kinematicController->OnGround();
+        }
+        return false;
+    }
 
 }

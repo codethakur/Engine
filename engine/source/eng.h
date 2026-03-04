@@ -19,6 +19,8 @@
 #include"scene/components/LightComponent.h"
 #include"scene/components/AnimationComponent.h"
 #include"scene/components/PhysicsComponent.h"
+#include "scene/components/AudioComponent.h"
+#include "scene/components/AudioListenerComponent.h"
 #include"Common.h"
 #include"physics/physicsManager.h"
 #include"physics/RigidBody.h"
