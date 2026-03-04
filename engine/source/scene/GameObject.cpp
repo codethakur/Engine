@@ -18,6 +18,14 @@
 
 namespace eng
 {
+    void GameObject::Init()
+    {
+
+    }
+    void GameObject::LoadProperties(const nlohmann::json& json)
+    {
+
+    }
     void GameObject::Update(float deltaTime)
     {
         if(!m_active){
@@ -453,7 +461,7 @@ namespace eng
             }
         };
 
-    GameObject *GameObject::LoadGLTF(const std::string &path)
+    GameObject *GameObject::LoadGLTF(const std::string &path, Scene* GameScene)
     {
         auto contents = Engine::GetInstance().GetFileSystem().LoadAssetFileText(path);
         if (contents.empty())
@@ -468,6 +476,10 @@ namespace eng
             // cgltf_free(data);
             return nullptr;
         }
+        if(!GameScene)
+        {
+            return nullptr;
+        }
         auto fullPath = Engine::GetInstance().GetFileSystem().GetAssetFolder() / path;
         auto fullFolderPath = fullPath.remove_filename();
         auto relativeFolderPath = std::filesystem::path(path).remove_filename();
@@ -478,7 +490,7 @@ namespace eng
             cgltf_free(data);
             return nullptr;
         }
-        auto resultObject = Engine::GetInstance().GetScene()->CreateObject("Result");
+        auto resultObject = GameScene->CreateObject("Result");
         auto scene = &data->scenes[0];
 
         for (cgltf_size i = 0; i < scene->nodes_count; ++i)
@@ -588,5 +600,20 @@ namespace eng
         cgltf_free(data);
         return resultObject;
     }
+    GameObjectFactory& GameObjectFactory::GetInstance() 
+    {
+        static GameObjectFactory instance;
+        return instance;
+    }
+    GameObject* GameObjectFactory::CreateGameObject(const std::string& typeName) 
+    {
+        auto it = m_creators.find(typeName);
+            if (it == m_creators.end())
+            {
+                return nullptr;
+            }
+            return it->second->CreateGameObject();
+    }
+
 
 }

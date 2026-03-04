@@ -5,9 +5,14 @@
 #include<memory>
 #include <filesystem>
 
+void Game::RegisterTypes()
+{
+    Player::Register();
+}
+
 bool Game::Init()
 {
-
+#if 0
     auto& fs = eng::Engine::GetInstance().GetFileSystem();
     auto texture = eng::Texture::Load("brick.png");
 
@@ -86,7 +91,11 @@ bool Game::Init()
 
   
     //camera->SetPosition(glm::vec3(0.0f, 1.0f, 7.0f));
+#endif
+    auto scene = eng::Scene::Load("scenes/scene.sc");
+    m_scene=scene;
 
+    eng::Engine::GetInstance().SetScene(scene.get());
     return true;
 }
 
