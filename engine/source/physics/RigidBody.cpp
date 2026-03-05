@@ -74,6 +74,10 @@ namespace eng
     }
     glm::vec3 RigidBody::GetPosition() const
     {
+        if(!m_body)
+        {
+            return glm::vec3(0.0f, 0.0f, 0.0f);
+        }
         const auto &position = m_body->getWorldTransform().getOrigin();
         return glm::vec3(position.x(), position.y(), position.z());
     }
@@ -95,9 +99,21 @@ namespace eng
 
     glm::quat RigidBody::GetRotation() const
     {
+        if(!m_body)
+        {
+            return glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+        }
         const auto& rot = m_body->getWorldTransform().getRotation();
 		return glm::quat(rot.w(), rot.x(), rot.y(), rot.z());
     }
-
-    
+    void RigidBody::ApplyImpulse(const glm::vec3& impluse)
+    {
+        if(!m_body)
+        {
+            return;
+        }
+        m_body->applyCentralForce(btVector3(
+            btScalar(impluse.x), btScalar(impluse.y), btScalar(impluse.z)
+        ));
+    }
 }

@@ -98,5 +98,9 @@ namespace eng
         m_rigidBody = body;
         
     }
+    const std::shared_ptr<RigidBody>& PhysicsComponent::GetRigitBody()
+    {
+       return m_rigidBody;
+    }
 
 }

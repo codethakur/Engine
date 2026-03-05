@@ -17,6 +17,8 @@ add_executable(${PROJECT_NAME}
     source/TestObject.cpp
     source/Player.h
     source/Player.cpp
+    source/Bullet.h
+    source/Bullet.cpp
 )
 include_directories(engine/source)
 

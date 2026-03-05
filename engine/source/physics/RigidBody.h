@@ -28,7 +28,7 @@ namespace eng
 		glm::vec3 GetPosition() const;
 		void SetRotation(const glm::quat& rotation);
 		glm::quat GetRotation() const;
-        
+        void ApplyImpulse(const glm::vec3& impluse);
 
     private:
         std::unique_ptr<btRigidBody>m_body;

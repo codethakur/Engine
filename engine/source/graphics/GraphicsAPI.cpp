@@ -188,9 +188,17 @@ namespace eng
   }
   void GraphicsAPI::BindMesh(Mesh* mesh)
   {
-    if(mesh){
+    if(mesh)
+    {
       mesh->Bind();
     }
+  }
+  void GraphicsAPI::UnbindMesh(Mesh* mesh)
+  {
+    if(mesh)
+    {
+      mesh->Unbind();
+    }    
   }
   void GraphicsAPI::DrawMesh(Mesh* mesh)
   {

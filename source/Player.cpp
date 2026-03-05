@@ -1,7 +1,8 @@
-#include"Player.h"
+#include "Player.h"
+#include "Bullet.h"
 #include <GLFW/glfw3.h>
 
-void Player::Init() 
+void Player::Init()
 {
 
     if (auto bullet = FindChildByName("bullet_33"))
@@ -12,7 +13,7 @@ void Player::Init()
     {
         fire->SetActive(false);
     }
-    if(auto gun =  FindChildByName("Gun"))
+    if (auto gun = FindChildByName("Gun"))
     {
         m_animationComponent = gun->GetComponent<eng::AnimationComponent>();
     }
@@ -20,11 +21,11 @@ void Player::Init()
     m_playerControllerComponent = GetComponent<eng::PlayerControllerComponent>();
 }
 
-void Player::Update(float deltaTime ) 
+void Player::Update(float deltaTime)
 {
     eng::GameObject::Update(deltaTime);
 
-    auto& input = eng::Engine::GetInstance().GetInputManager();
+    auto &input = eng::Engine::GetInstance().GetInputManager();
     if (input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT))
     {
         if (m_animationComponent && !m_animationComponent->IsPlaying())
@@ -39,6 +40,26 @@ void Player::Update(float deltaTime )
                 m_audioComponent->Play("shoot");
             }
         }
+            auto bullet = m_scene->CreateObject<Bullet>("Bullet");
+            auto material = eng::Material::Load("materials/suzanne.mat");
+            auto mesh = eng::Mesh::CreateSphere(0.02f, 32, 32);
+            bullet->AddComponent(new eng::MeshComponent(material, mesh));
+
+            glm::vec3 position = glm::vec3(0.0f);
+            if (auto child = FindChildByName("BOOM_35"))
+            {
+                position = child->GetWorldPosition();
+            }
+            bullet->SetPosition(position + m_rotation * glm::vec3(-0.2f, 0.2f, -1.75f));
+
+            auto collider = std::make_shared<eng::SphereCollider>(0.2f);
+            auto rigidBody = std::make_shared<eng::RigidBody>(eng::BodyType::Dynamic, collider, 10.0f, 0.1f);
+            bullet->AddComponent(new eng::PhysicsComponent(rigidBody));
+
+            glm::vec3 front = m_rotation * glm::vec3(0.0f, 0.0f, -1.0f);
+            rigidBody->ApplyImpulse(front * 5000.0f);
+        
+
     }
     if (input.IsKeyPressed(GLFW_KEY_SPACE))
     {
@@ -66,5 +87,4 @@ void Player::Update(float deltaTime )
             m_audioComponent->Stop("step");
         }
     }
-    
 }

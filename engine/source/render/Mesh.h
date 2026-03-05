@@ -17,8 +17,10 @@ namespace eng
         Mesh &operator=(const Mesh &) = delete;
 
         void Bind();
+        void Unbind();
         void Draw();
         static std::shared_ptr<Mesh> CreateBox(const glm::vec3& extents = glm::vec3(1.0f));
+        static std::shared_ptr<Mesh>CreateSphere(float radius, int sectors, int stacks);
       //  static std::shared_ptr<Mesh>Load(const std::string& path);
 
     private:

@@ -28,6 +28,7 @@ namespace eng
         void BindShaderProgram(ShaderProgram* shader);
         void BindMaterial(Material* material);
         void BindMesh(Mesh* mesh);
+        void UnbindMesh(Mesh* mesh);
         void DrawMesh(Mesh* mesh);
     private:
     std::shared_ptr<ShaderProgram>m_defaultShaderProgram;
