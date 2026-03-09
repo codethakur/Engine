@@ -106,6 +106,12 @@ namespace eng
                 auto mesh = Mesh::CreateBox(extents);
                 SetMesh(mesh);
             }
+            else if (type == "sphere")
+            {
+                float r = meshObj.value("r", 1.0f);
+                auto mesh = Mesh::CreateSphere(r, 16, 16);
+                SetMesh(mesh);
+            }
         }
     }
     void MeshComponent::SetMaterial(const std::shared_ptr<Material>& material)

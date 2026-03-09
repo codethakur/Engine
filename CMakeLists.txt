@@ -19,6 +19,8 @@ add_executable(${PROJECT_NAME}
     source/Player.cpp
     source/Bullet.h
     source/Bullet.cpp
+    source/JumpPlatform.h
+    source/JumpPlatform.cpp
 )
 include_directories(engine/source)
 

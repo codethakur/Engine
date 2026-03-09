@@ -1513,6 +1513,180 @@
       ]
     },
     {
+      "name": "JumpPlatform",
+      "type": "JumpPlatform",
+      "position": {
+        "x": -7,
+        "y": 1.75,
+        "z": 1
+      },
+      "components": [
+        {
+          "type": "MeshComponent",
+          "mesh": {
+            "type": "box",
+            "x": 2,
+            "y": 0.2,
+            "z": 2
+          },
+          "material": {
+            "path": "materials/checker.mat",
+            "params": {
+              "float3": [
+                {
+                  "name": "color",
+                  "value0": 0,
+                  "value1": 1,
+                  "value2": 0
+                }
+              ]
+            }
+          }
+        },
+        {
+          "type": "PhysicsComponent",
+          "collider": {
+            "type": "box",
+            "x": 2,
+            "y": 0.2,
+            "z": 2
+          },
+          "body": {
+            "mass": 0,
+            "friction": 0.5,
+            "type": "static"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ObjectCollide16",
+      "position": {
+        "x": 10,
+        "y": 1.251,
+        "z": -8
+      },
+      "components": [
+        {
+          "type": "MeshComponent",
+          "mesh": {
+            "type": "sphere",
+            "r": 1.5
+          },
+          "material": {
+            "path": "materials/checker.mat",
+            "params": {
+              "float3": [
+                {
+                  "name": "color",
+                  "value0": 0.0,
+                  "value1": 1.0,
+                  "value2": 0.0
+                }
+              ]
+            }
+          }
+        },
+        {
+          "type": "PhysicsComponent",
+          "collider": {
+            "type": "sphere",
+            "r": 1.5
+          },
+          "body": {
+            "mass": 15,
+            "friction": 0.5,
+            "type": "dynamic"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ObjectCollide17",
+      "position": {
+        "x": 10,
+        "y": 1.251,
+        "z": -6
+      },
+      "components": [
+        {
+          "type": "MeshComponent",
+          "mesh": {
+            "type": "sphere",
+            "r": 1.5
+          },
+          "material": {
+            "path": "materials/checker.mat",
+            "params": {
+              "float3": [
+                {
+                  "name": "color",
+                  "value0": 0.0,
+                  "value1": 0.0,
+                  "value2": 1.0
+                }
+              ]
+            }
+          }
+        },
+        {
+          "type": "PhysicsComponent",
+          "collider": {
+            "type": "sphere",
+            "r": 1.5
+          },
+          "body": {
+            "mass": 15,
+            "friction": 0.5,
+            "type": "dynamic"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ObjectCollide18",
+      "position": {
+        "x": 10,
+        "y": 1.251,
+        "z": -4
+      },
+      "components": [
+        {
+          "type": "MeshComponent",
+          "mesh": {
+            "type": "sphere",
+            "r": 1.5
+          },
+          "material": {
+            "path": "materials/checker.mat",
+            "params": {
+              "float3": [
+                {
+                  "name": "color",
+                  "value0": 0.0,
+                  "value1": 1.0,
+                  "value2": 1.0
+                }
+              ]
+            }
+          }
+        },
+        {
+          "type": "PhysicsComponent",
+          "collider": {
+            "type": "sphere",
+            "r": 1.5
+          },
+          "body": {
+            "mass": 15,
+            "friction": 0.5,
+            "type": "dynamic"
+          }
+        }
+      ]
+    },
+
+    {
       "name": "Light",
       "position": {
         "x": -2,

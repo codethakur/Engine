@@ -4,10 +4,14 @@
 #include<iostream>
 #include<memory>
 #include <filesystem>
+#include"JumpPlatform.h"
+#include"Bullet.h"
 
 void Game::RegisterTypes()
 {
     Player::Register();
+    Bullet::Register();
+    JumpPlatform::Register();
 }
 
 bool Game::Init()

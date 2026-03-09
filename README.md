@@ -8,5 +8,10 @@
 
 
 
-<p>Ambient, Materials, Direct Light</p>p
+<p>Ambient, Materials, Direct Light</p>
 <img width="1274" height="830" alt="Ambient, Materials, Direct Light" src="https://github.com/user-attachments/assets/ad88acc3-cfb4-47e3-b621-fa637022b460" />
+
+
+<p>Jump Platform</p>
+<img width="1274" height="830" alt="Jump Platform" src="https://github.com/user-attachments/assets/1c7791e0-da5b-438f-8d47-7550cf4da937" />
+
