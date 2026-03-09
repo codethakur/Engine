@@ -50,10 +50,11 @@ namespace eng
     }
     void ShaderProgram::SetTexture(const std::string& name, Texture* texture)
     {
-        auto loaction = GetUniformLocation(name);
+       auto location = GetUniformLocation(name);
+       
         glActiveTexture(GL_TEXTURE0 + m_currentTextureUnit);
         glBindTexture(GL_TEXTURE_2D, texture->GetID());
-        glUniform1i(loaction, m_currentTextureUnit);
+        glUniform1i(location, m_currentTextureUnit);
         ++m_currentTextureUnit;
 
     }

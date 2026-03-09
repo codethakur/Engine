@@ -5,3 +5,8 @@
 
 <p>Physics</p>
 <img width="1274" height="830" alt="Physics" src="https://github.com/user-attachments/assets/2f2851bb-6d7d-43b8-8e07-2ac5fdbf1dc4" />
+
+
+
+<p>Ambient, Materials, Direct Light</p>p
+<img width="1274" height="830" alt="Ambient, Materials, Direct Light" src="https://github.com/user-attachments/assets/ad88acc3-cfb4-47e3-b621-fa637022b460" />

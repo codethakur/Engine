@@ -42,7 +42,7 @@ void Player::Update(float deltaTime)
         }
             auto bullet = m_scene->CreateObject<Bullet>("Bullet");
             auto material = eng::Material::Load("materials/suzanne.mat");
-            auto mesh = eng::Mesh::CreateSphere(0.02f, 32, 32);
+            auto mesh = eng::Mesh::CreateSphere(0.06f, 32, 32);
             bullet->AddComponent(new eng::MeshComponent(material, mesh));
 
             glm::vec3 position = glm::vec3(0.0f);

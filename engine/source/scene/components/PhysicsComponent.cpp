@@ -79,7 +79,7 @@ namespace eng
         m_rigidBody->SetPosition(position);
         m_rigidBody->SetRotation(rotation);
         Engine::GetInstance().GetPhysicsManager().AddRigidBody(m_rigidBody.get());
-        std::cout << "PhysicsComponent Init called\n";
+      //  std::cout << "PhysicsComponent Init called: " << this << "\n";
     }
     void PhysicsComponent::Update(float deltaTime) 
     {

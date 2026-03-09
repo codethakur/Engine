@@ -99,7 +99,7 @@ namespace eng
       struct Light
       {
           vec3 color;
-          vec3 position;
+          vec3 direction;
       };
 
       uniform Light uLight;
@@ -116,8 +116,8 @@ namespace eng
       void main()
       {
           vec3 norm = normalize(vNormal);
-          //uniform
-          vec3 lightDir = normalize(uLight.position - vFragPos);
+          //diffuse
+          vec3 lightDir = normalize(-uLight.direction);
           float diff = max(dot(norm, lightDir), 0.0);
           vec3 diffuse = diff * uLight.color;
 
@@ -128,7 +128,11 @@ namespace eng
           float specularStrength = 0.5;
           vec3 specular = specularStrength * spec * uLight.color;
 
-          vec3 result = diffuse + specular;
+        // ambient
+        const float ambientStrength = 0.4;
+        vec3 ambient = ambientStrength * uLight.color;
+
+        vec3 result = diffuse + specular + ambient;
 
           vec4 texColor = texture(baseColorTexture, vUV);
 
@@ -136,11 +140,12 @@ namespace eng
       }
 
       )";
-      m_defaultShaderProgram = CreateShaderProgram(VertexShaderSource, fragmentShaderSource);
-    }
 
-    return m_defaultShaderProgram;
-  }
+            m_defaultShaderProgram = CreateShaderProgram(VertexShaderSource, fragmentShaderSource);
+        }
+
+        return m_defaultShaderProgram;
+    }
 
   GLuint GraphicsAPI::CreateVertexBuffer(const std::vector<float>vertices)
   {
