@@ -50,16 +50,30 @@ namespace eng
         void SetPosition(const glm::vec3& position);
         void SetWorldPosition(const glm::vec3& position);
 
-        const glm::quat GetRotation() const;
-        glm::quat GetWorldRotation();
+        void SetPosition2D(const glm::vec2& position);
         void SetRotation(const glm::quat& rotation);
         void SetWorldRotation(const glm::quat& rotation);
+        void SetRotation2D(float rotation);
+        
+
+        const glm::quat GetRotation() const;
+        glm::quat GetWorldRotation();
+        glm::vec2 GetPosition2D()const;
+        glm::vec2 GetWorldPosition2D()const;
+        float GetRotation2D()const;
+
+     
+       
 
         const glm::vec3 GetScale() const;
+        glm::vec2 GetScale2D() const;
         void SetScale(const glm::vec3& scale);
+        void SetScale2D(const glm::vec2& scale);
 
         glm::mat4 GetLocalTransform() const;
+        glm::mat4 GetLocalTransform2D() const;
         glm::mat4 GetWorldTransform() const;
+        glm::mat4 GetWorldTransform2D() const;
 
         static GameObject* LoadGLTF(const std::string& path, Scene* GameScene);
 

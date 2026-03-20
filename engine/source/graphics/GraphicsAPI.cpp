@@ -1,15 +1,15 @@
 #include "graphics/GraphicsAPI.h"
 #include "graphics/ShaderProgram.h"
 #include "render/Material.h"
-#include"render/Mesh.h"
+#include "render/Mesh.h"
 #include <iostream>
 namespace eng
 {
   bool GraphicsAPI::Init()
   {
-    glEnable(GL_CULL_FACE);   // allow discarding invisible triangles
-    glCullFace(GL_BACK);     // discard inside faces
-    glFrontFace(GL_CCW);     // define what "front" means
+    glEnable(GL_CULL_FACE); // allow discarding invisible triangles
+    glCullFace(GL_BACK);    // discard inside faces
+    glFrontFace(GL_CCW);    // define what "front" means
     glEnable(GL_DEPTH_TEST);
 
     return true;
@@ -42,8 +42,7 @@ namespace eng
     {
       char infoLog[512];
       glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
-      std::cerr << "Fragment shader error:\n"
-                << infoLog << std::endl;
+      std::cerr << "Fragment shader error:\n"<< infoLog << std::endl;
       return nullptr;
     }
 
@@ -57,14 +56,14 @@ namespace eng
     {
       char infoLog[512];
       glGetProgramInfoLog(shaderProgramID, 512, nullptr, infoLog);
-      std::cerr << "Shader link error:\n" << infoLog << std::endl;
+      std::cerr << "Shader link error:\n"<< infoLog << std::endl;
       return nullptr;
     }
     return std::make_shared<ShaderProgram>(shaderProgramID);
   }
-  const std::shared_ptr<ShaderProgram>& GraphicsAPI::GetDefaultShaderProgram()
+  const std::shared_ptr<ShaderProgram> &GraphicsAPI::GetDefaultShaderProgram()
   {
-    if(!m_defaultShaderProgram)
+    if (!m_defaultShaderProgram)
     {
       std::string VertexShaderSource = R"(
       #version 330 core
@@ -81,10 +80,16 @@ namespace eng
       uniform mat4 uView;
       uniform mat4 uProjection;
 
+      uniform vec2 uPivot;
+      uniform vec2 uSize;
+
+      uniform vec2 uUVMin;
+      uniform vec2 uUVMax;
+
+
       void main()
       {
           vUV = uv;
-
           vFragPos = vec3(uModel * vec4(position, 1.0));
 
           vNormal = mat3(transpose(inverse(uModel))) * normal;
@@ -141,39 +146,133 @@ namespace eng
 
       )";
 
-            m_defaultShaderProgram = CreateShaderProgram(VertexShaderSource, fragmentShaderSource);
-        }
-
-        return m_defaultShaderProgram;
+      m_defaultShaderProgram = CreateShaderProgram(VertexShaderSource, fragmentShaderSource);
     }
 
-  GLuint GraphicsAPI::CreateVertexBuffer(const std::vector<float>vertices)
+    return m_defaultShaderProgram;
+  }
+  const std::shared_ptr<ShaderProgram>& GraphicsAPI::GetDefault2DShaderProgram()
+  {
+        if (!m_default2DShaderProgram)
+        {
+            std::string vertexShaderSource = R"(
+            #version 330 core
+            layout (location = 0) in vec2 position;
+        
+            out vec2 vUV;
+        
+            uniform mat4 uModel;
+            uniform mat4 uView;
+            uniform mat4 uProjection;
+
+            uniform vec2 uPivot;
+            uniform vec2 uSize;    
+
+            uniform vec2 uUVMin;
+            uniform vec2 uUVMax;  
+        
+            void main()
+            {
+                vec2 local = (position - uPivot) * uSize;
+                vUV = mix(uUVMin, uUVMax, position);
+                
+                gl_Position = uProjection * uView * uModel * vec4(local, 0.0, 1.0);
+            }
+            )";
+
+            std::string fragmentShaderSource = R"(
+            #version 330 core
+
+            in vec2 vUV;
+
+            uniform vec4 uColor;
+
+            uniform sampler2D uTex;
+
+            out vec4 FragColor;
+
+            void main()
+            {
+                vec4 src = texture(uTex, vUV) * uColor;
+                FragColor = src;
+            }
+            )";
+
+            m_default2DShaderProgram = CreateShaderProgram(vertexShaderSource, fragmentShaderSource);
+        }
+      return m_default2DShaderProgram;
+    }
+
+  GLuint GraphicsAPI::CreateVertexBuffer(const std::vector<float> vertices)
   {
     GLuint VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER,vertices.size()*sizeof(float), vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     return VBO;
-
   }
-  GLuint GraphicsAPI::CreateIndexBuffer(const std::vector<uint32_t>indeces)
+  GLuint GraphicsAPI::CreateIndexBuffer(const std::vector<uint32_t> indeces)
   {
     GLuint EBO;
     glGenBuffers(1, &EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indeces.size()*sizeof(uint32_t), indeces.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indeces.size() * sizeof(uint32_t), indeces.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     return EBO;
   }
   void GraphicsAPI::SetClearColor(float r, float g, float b, float a)
   {
     glClearColor(r, g, b, a);
-   
   }
   void GraphicsAPI::clearBuffers()
   {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  }
+  void GraphicsAPI::SetDepthTestEnabled(bool enable)
+  {
+    if(enable)
+    {
+      glEnable(GL_DEPTH_TEST);
+    }
+    else
+    {
+      glDisable(GL_DEPTH_TEST);
+    }
+  }
+  void GraphicsAPI::SetBlendMode(BlendMode mode)
+  {
+      switch (mode)
+      {
+        case BlendMode::Disabled:
+        {
+            glDisable(GL_BLEND);
+        }
+        break;
+        case BlendMode::Alpha:
+        {
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        }
+        break;
+        case BlendMode::Additive:
+        {
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_ONE, GL_ONE);
+        }
+        break;
+        case BlendMode::Multiply:
+        {
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_DST_COLOR, GL_ZERO);
+        }
+        break;
+        default:
+        {
+            glDisable(GL_BLEND);
+        }
+       break;
+      }
   }
 
   void GraphicsAPI::BindShaderProgram(ShaderProgram *shaderProgram)
@@ -184,32 +283,32 @@ namespace eng
     }
   }
 
-  void GraphicsAPI::BindMaterial(Material* material)
+  void GraphicsAPI::BindMaterial(Material *material)
   {
     if (material)
     {
       material->Bind();
     }
   }
-  void GraphicsAPI::BindMesh(Mesh* mesh)
+  void GraphicsAPI::BindMesh(Mesh *mesh)
   {
-    if(mesh)
+    if (mesh)
     {
       mesh->Bind();
     }
   }
-  void GraphicsAPI::UnbindMesh(Mesh* mesh)
+  void GraphicsAPI::UnbindMesh(Mesh *mesh)
   {
-    if(mesh)
+    if (mesh)
     {
       mesh->Unbind();
-    }    
+    }
   }
-  void GraphicsAPI::DrawMesh(Mesh* mesh)
+  void GraphicsAPI::DrawMesh(Mesh *mesh)
   {
-    if(mesh){
+    if (mesh)
+    {
       mesh->Draw();
     }
   }
 }
-

@@ -22,7 +22,9 @@ namespace eng
     
     SphereCollider::SphereCollider(float radius)
     {
-       m_shape = new btSphereShape(radius);
+        auto shape = new btSphereShape(radius);
+        shape->setMargin(0.0f);
+        m_shape = shape;
     }
 
     CapsuleCollider::CapsuleCollider(float radius, float height)

@@ -35,6 +35,7 @@ add_library(${PROJECT_NAME} STATIC
     source/scene/components/AnimationComponent.cpp
     source/scene/components/AudioComponent.cpp
     source/scene/components/AudioListenerComponent.cpp
+    source/scene/components/SpriteComponent.cpp
     source/audio/Audio.cpp
     source/audio/AudioManager.cpp
     source/physics/physicsManager.cpp

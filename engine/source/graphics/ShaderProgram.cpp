@@ -48,8 +48,18 @@ namespace eng
        auto location = GetUniformLocation(name);
        glUniform3fv(location, 1, glm::value_ptr(value));
     }
+    void ShaderProgram::SetUniform(const std::string& name, const glm::vec4& value)
+    {
+        auto location = GetUniformLocation(name);
+       glUniform4fv(location, 1, glm::value_ptr(value));
+    }
     void ShaderProgram::SetTexture(const std::string& name, Texture* texture)
     {
+        if (!texture)
+        {
+            std::cout << "Texture is NULL!\n";
+            return;
+        }
        auto location = GetUniformLocation(name);
        
         glActiveTexture(GL_TEXTURE0 + m_currentTextureUnit);

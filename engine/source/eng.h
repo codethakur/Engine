@@ -21,6 +21,7 @@
 #include"scene/components/PhysicsComponent.h"
 #include "scene/components/AudioComponent.h"
 #include "scene/components/AudioListenerComponent.h"
+#include"scene/components/SpriteComponent.h"
 #include"Common.h"
 #include"physics/physicsManager.h"
 #include"physics/RigidBody.h"

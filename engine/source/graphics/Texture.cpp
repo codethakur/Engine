@@ -1,6 +1,6 @@
 #include"Texture.h"
 #include"Engine.h"
-
+#include<iostream>
 #define STB_IMAGE_IMPLEMENTATION
 #include<stb_image.h>
 
@@ -45,6 +45,7 @@ namespace eng
         auto fullPath = fs.GetAssetFolder()/path;
         if(!std::filesystem::exists(fullPath))
         {
+             std::cout << "Texture NOT found: " << fullPath << std::endl;
             return nullptr;
         }
         std::shared_ptr<Texture>result;
