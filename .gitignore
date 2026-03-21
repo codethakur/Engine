@@ -52,6 +52,12 @@ Game
 # =========================
 *.log
 
+# Ignore unnecessary FreeType stuff
+engine/thirdparty/freetype-2.14.1/docs/
+engine/thirdparty/freetype-2.14.1/tests/
+engine/thirdparty/freetype-2.14.1/builds/
+engine/thirdparty/freetype-2.14.1/.git/
+engine/thirdparty/freetype-2.14.1/.github/
 # =========================
 # Temporary files
 # =========================
