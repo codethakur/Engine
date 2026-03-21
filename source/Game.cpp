@@ -133,5 +133,5 @@ void Game::Update(float deltaTime)
 
 void Game::Destroy()
 {
-
+ m_scene.reset();
 }

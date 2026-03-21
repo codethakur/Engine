@@ -23,9 +23,9 @@ add_library(${PROJECT_NAME} STATIC
     source/render/Material.cpp
     source/render/Mesh.cpp
     source/render/RenderQueue.cpp
-    source/Scene/GameObject.cpp
+    source/scene/GameObject.cpp
     source/scene/Scene.cpp
-    source/Scene/Component.cpp
+    source/scene/Component.cpp
     source/Scene/components/MeshComponent.cpp
     source/Scene/components/CameraComponent.cpp
     source/scene/components/PhysicsComponent.cpp
@@ -36,6 +36,11 @@ add_library(${PROJECT_NAME} STATIC
     source/scene/components/AudioComponent.cpp
     source/scene/components/AudioListenerComponent.cpp
     source/scene/components/SpriteComponent.cpp
+
+    source/scene/components/ui/UIElementComponent.cpp
+    source/scene/components/ui/CanvasComponent.cpp
+    source/scene/components/ui/TextComponent.cpp
+
     source/audio/Audio.cpp
     source/audio/AudioManager.cpp
     source/physics/physicsManager.cpp
