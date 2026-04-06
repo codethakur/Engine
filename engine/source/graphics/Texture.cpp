@@ -38,6 +38,14 @@ namespace eng
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
     }
+    int Texture::getWidth()const
+    {
+        return m_width;
+    }
+    int Texture::getHeight()const
+    {
+        return m_height;
+    }
     std::shared_ptr<Texture>Texture::Load(const std::string& path)
     {
         int width, height, numChannels;

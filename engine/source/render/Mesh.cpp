@@ -75,6 +75,55 @@ namespace eng
             glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei> (m_vertexCount));
         }
     }
+    void Mesh::DrawIndexedRange(uint32_t startIndex, uint32_t indexCount)
+    {
+        if (indexCount == 0)
+        {
+            return;
+        }
+        glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), 
+            GL_UNSIGNED_INT, 
+            reinterpret_cast<void*>(static_cast<size_t>(startIndex) * sizeof(uint32_t)));
+    }
+    void Mesh::UpdateDynamic(const std::vector<float>& vertices)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+
+        glBufferData(GL_ARRAY_BUFFER,
+            vertices.size() * sizeof(float),
+            vertices.data(), GL_DYNAMIC_DRAW
+        );
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        m_vertexCount = (vertices.size() * sizeof(float)) / m_vertexLayout.stride;
+       
+
+    }
+    void Mesh::UpdateDynamic(const std::vector<float>& vertices, const std::vector<uint32_t>& indices)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+
+        glBufferData(GL_ARRAY_BUFFER,
+            vertices.size() * sizeof(float),
+            vertices.data(), GL_DYNAMIC_DRAW
+        );
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        m_vertexCount = (vertices.size() * sizeof(float)) / m_vertexLayout.stride;
+
+        if (m_EBO == 0)
+            Engine::GetInstance().GetGraphicsAPI().CreateIndexBuffer(indices);
+        else
+        {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+            indices.size() * sizeof(uint32_t),
+            indices.data(), GL_DYNAMIC_DRAW);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        }
+        m_indexCount = indices.size();
+    }
     std::shared_ptr<Mesh> Mesh::CreateBox(const glm::vec3& extents)
     {
         const glm::vec3 half = extents * 0.5f;

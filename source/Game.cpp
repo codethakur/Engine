@@ -1,11 +1,17 @@
-#include"Game.h"
-#include"TestObject.h"
-#include"Player.h"
 #include<iostream>
 #include<memory>
 #include <filesystem>
+#include <glad/glad.h> // before then GLFW  
+#include<GLFW/glfw3.h>
+
+#include"Game.h"
+#include"TestObject.h"
+#include"Player.h"
+
 #include"JumpPlatform.h"
 #include"Bullet.h"
+#include "scene/components/ui/CanvasComponent.h"
+#include "scene/components/ui/TextComponent.h"
 
 void Game::RegisterTypes()
 {
@@ -96,17 +102,68 @@ bool Game::Init()
   
     //camera->SetPosition(glm::vec3(0.0f, 1.0f, 7.0f));
 #endif
-    /*auto scene = eng::Scene::Load("scenes/scene.sc");
+    auto scene = eng::Scene::Load("scenes/scene.sc");
     m_scene=scene;
 
-    eng::Engine::GetInstance().SetScene(scene.get());*/
 
+    auto& engine = eng::Engine::GetInstance();
+
+    engine.GetInstance().SetScene(m_scene);
+    
+    m_3DRoot = m_scene->FindObjectByName("3DRoot");
+    if (m_3DRoot)
+    {
+        m_3DRoot->SetActive(false);
+    }
+
+    auto canvasComponent = engine.GetInstance().GetUIInputSystem().GetCanvas();
+    if (!canvasComponent)
+    {
+        return false;
+    }
+
+    canvasComponent->SetActive(true);
+    engine.SetCursorEnabled(true);
+    engine.GetUIInputSystem().SetActive(true);
+
+    if (auto button = canvasComponent->GetOwner()->FindChildByName("PlayButton"))
+    {
+        if (auto component = button->GetComponent<eng::ButtonComponent>())
+        {
+            component->onClick = [this]()
+                {
+                    auto& engine = eng::Engine::GetInstance();
+                    engine.GetUIInputSystem().GetCanvas()->SetActive(false);
+                    engine.SetCursorEnabled(false);
+
+                    if (m_3DRoot)
+                    {
+                        m_3DRoot->SetActive(true);
+                    }
+                };
+        }
+    }
+
+    if (auto button = canvasComponent->GetOwner()->FindChildByName("QuitButton"))
+    {
+        if (auto component = button->GetComponent<eng::ButtonComponent>())
+        {
+            component->onClick = [this]()
+                {
+                    SetNeedsToBeClosed(true);
+                };
+        }
+    }
+
+    
+    #if 0
     m_scene = std::make_shared<eng::Scene>();
     eng::Engine::GetInstance().SetScene(m_scene.get());
+
     auto sprite = m_scene->CreateObject("Sprite");
     auto spriteComponent = new eng::SpriteComponent();
 
-     auto texture = eng::Texture::Load("textures/brick.png");
+    auto texture = eng::Texture::Load("textures/brick.png");
     spriteComponent->SetTexture(texture);
 
     sprite->AddComponent(spriteComponent);
@@ -122,11 +179,49 @@ bool Game::Init()
     camera->AddComponent(cameraComponent);
     m_scene->SetMainCamera(camera);
 
+    auto canvas = m_scene->CreateObject("Canvas");
+    auto canvasComponent = new eng::CanvasComponent();
+    canvas->AddComponent(canvasComponent);
+
+    auto& uiInput = eng::Engine::GetInstance().GetUIInputSystem();
+    uiInput.SetActive(true);
+    uiInput.SetCanvas(canvasComponent);
+
+    auto button = m_scene->CreateObject("Button", canvas);
+    button->SetPosition2D(glm::vec2(300.0f, 300.0f));
+    auto buttonComponent = new eng::ButtonComponent();
+    buttonComponent->SetRect(glm::vec2(150.0f, 50.0f));
+    buttonComponent->SetColor(glm::vec4(0.8f, 0.8f, 0.8f, 1.0f));
+    button->AddComponent(buttonComponent);
+    // After creating button
+
+    auto text = m_scene->CreateObject("Text", canvas);
+    text->SetPosition2D(glm::vec2(300.0f, 300.0f));
+    auto textComponent = new eng::TextComponent();
+    text->AddComponent(textComponent);
+    textComponent->SetText("Some Text");
+    textComponent->SetFont("fonts/arial.ttf", 24);
+    textComponent->SetColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+    #endif
+
+        eng::Engine::GetInstance().GetGraphicsAPI().SetClearColor(
+            64.0f/255.0f, 64.0f/255.0f, 64.0f/255.0f, 1.0f
+        );
     return true;
 }
 
 void Game::Update(float deltaTime)
 {
+    auto& engine = eng::Engine::GetInstance();
+    if (engine.GetInputManager().IsKeyPressed(GLFW_KEY_ESCAPE))
+    {
+        if (m_3DRoot && m_3DRoot->IsActive())
+        {
+            engine.GetUIInputSystem().GetCanvas()->SetActive(true);
+            engine.SetCursorEnabled(true);
+            m_3DRoot->SetActive(false);
+        }
+    }
     m_scene->Update(deltaTime); 
     
 }

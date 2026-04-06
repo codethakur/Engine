@@ -1,14 +1,18 @@
 #pragma once
-#include <input/InputManager.h>
-#include "graphics/GraphicsAPI.h"
-#include"graphics/Texture.h"
-#include "render/RenderQueue.h"
-#include "scene/Scene.h"
-#include"physics/physicsManager.h"
 #include <memory>
 #include <chrono>
-#include "io/FileSystem.h"
+#include <input/InputManager.h>
+
+#include"graphics/GraphicsAPI.h"
+#include"graphics/Texture.h"
+#include"render/RenderQueue.h"
+#include"scene/Scene.h"
+#include"physics/physicsManager.h"
+#include"io/FileSystem.h"
 #include"audio/AudioManager.h"
+#include"font/FontManager.h"
+#include"scene/components/ui/UIInputSystem.h"
+
 
 struct GLFWwindow;
 
@@ -31,6 +35,7 @@ namespace eng
         bool Init(int width, int height);
         void Run();
         void Destroy();
+        void SetCursorEnabled(bool enabled);
 
         void SetApplication(Application* app);
         Application*  GetApplication();
@@ -40,10 +45,13 @@ namespace eng
         TextureManger& GetTextureManager();
         PhysicsManager& GetPhysicsManager();
         AudioManager& GetAudioManager();
-        
-        void SetScene(Scene* scene);
-        Scene* GetScene();
+        FontManager& GetFontManager();
+        UIInputSystem& GetUIInputSystem();
+
+        void SetScene(const std::shared_ptr<Scene>&scene);
+        const std::shared_ptr<Scene>& GetScene();
         FileSystem& GetFileSystem();
+        GLFWwindow* GetWindow() { return m_window; }
 
     private : 
         std::unique_ptr<Application> m_application;
@@ -56,7 +64,9 @@ namespace eng
         TextureManger m_textureManager;
         PhysicsManager m_physicsManager;
         AudioManager m_audiomManager;
-        std::unique_ptr<Scene> m_CurrentScreen;
+        FontManager m_fontmanager;
+        UIInputSystem m_uiInputSystem;
+        std::shared_ptr<Scene> m_CurrentScreen;
 
     };
 }

@@ -37,6 +37,8 @@ namespace eng
 
         }
         bool  SetParent(GameObject* obj, GameObject* parent);
+        GameObject* FindObjectByName(const std::string& name);
+        
         void SetMainCamera(GameObject* camera);
         GameObject*GetMainCamera() const;
         std::vector<LightData> CollectLights();

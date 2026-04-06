@@ -1,32 +1,18 @@
-#pragma once
-#include"graphics/Texture.h"
-#include<memory>
+#include"font/Font.h"
+
 
 namespace eng
 {
-    struct GlyphDescription
+    int Font::GetSize() const
     {
-        int x0, y0;
-        int x1, y1;
-
-        int width;
-        int height;
-
-        int advance;
-    };
-
-    class Font
+        return m_size;
+    }
+    const GlyphDescription& Font::GetGlyphDescription(char asciiCode) const
     {
-    public:
-        int GetSize() const;
-        const GlyphDescription& GetGlyphDescription(char asciiCode) const;
-        const std::shared_ptr<Texture>& GetTexture() const;
-
-    private:
-        int m_size = 0;
-        GlyphDescription m_descriptions[128];
-        std::shared_ptr<Texture> m_texture;
-
-        friend class FontManager;
-    };
-}
+        return m_descriptions[static_cast<unsigned char>(asciiCode)];
+    }
+    const std::shared_ptr<Texture>& Font::GetTexture() const
+    {
+        return m_texture; 
+    }
+} 

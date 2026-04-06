@@ -4,6 +4,30 @@ namespace eng
 {
     void UIElementComponent::Render(CanvasComponent* canvas)
     {
-        //to  be implement
+       
+    }
+    bool UIElementComponent::HitTest(const glm::vec2& position)
+    {
+        return false;
+    }
+
+    void UIElementComponent::OnPointerEnter()
+    {
+    }
+
+    void UIElementComponent::OnPointerExit()
+    {
+    }
+
+    void UIElementComponent::OnPointerUp()
+    {
+    }
+
+    void UIElementComponent::OnPointerDown()
+    {
+    }
+
+    void UIElementComponent::OnClick()
+    {
     }
 }

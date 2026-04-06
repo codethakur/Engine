@@ -9,7 +9,11 @@ namespace eng
         COMPONENT(UIElementComponent)
     public:
         virtual void Render(CanvasComponent* canvas);
-    protected:
-      glm::vec2 m_pivot = glm::vec2(0.5f);
+        virtual bool HitTest(const glm::vec2& position);
+        virtual void OnPointerEnter();
+        virtual void OnPointerExit();
+        virtual void OnPointerUp();
+        virtual void OnPointerDown();
+        virtual void OnClick();
     };
 }

@@ -11,6 +11,8 @@
 #include"scene/components/ui/UIElementComponent.h"
 #include"scene/components/ui/CanvasComponent.h"
 #include"scene/components/ui/TextComponent.h"
+#include"scene/components/ui/ButtonComponent.h"
+#include"scene/components/ui/RectTransformComponent.h"
 #include <algorithm>
 #include "Engine.h"
 namespace eng
@@ -29,6 +31,8 @@ namespace eng
         UIElementComponent::Register();
         CanvasComponent::Register();
         TextComponent::Register();
+        ButtonComponent::Register();
+        RectTransformComponent::Register();
     }
     void Scene::Update(float deltaTime)
     {
@@ -231,6 +235,17 @@ namespace eng
         return result;
     }
 
+    GameObject* Scene::FindObjectByName(const std::string& name)
+    {
+        for (auto& obj : m_objects)
+        {
+            if (auto child = obj->FindChildByName(name))
+            {
+                return child;
+            }
+        }
+        return nullptr;
+    }
     void Scene::SetMainCamera(GameObject *camera)
     {
         m_mainCamera = camera;
@@ -283,6 +298,19 @@ namespace eng
                 }
             }
         }
+        std::string activeCanvasName = json.value("activeCanvas", "");
+        for (auto& child : result->m_objects)
+        {
+            if (auto canvasObject = child->FindChildByName(activeCanvasName))
+            {
+                if (auto component = canvasObject->GetComponent<CanvasComponent>())
+                {
+                    Engine::GetInstance().GetUIInputSystem().SetCanvas(component);
+                    break;
+                }
+            }
+        }
+
         return result;
     }
     void Scene::CollectLightsRecursive(GameObject *obj, std::vector<LightData> &out)

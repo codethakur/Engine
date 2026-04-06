@@ -3,6 +3,8 @@
 #include"render/Material.h"
 #include"graphics/GraphicsAPI.h"
 #include<graphics/ShaderProgram.h>
+#include <glm/gtc/matrix_transform.hpp>
+
 
 
 namespace eng
@@ -19,6 +21,10 @@ namespace eng
     void RenderQueue::Submit(const RenderCommand2D& command)
     {
         m_commands2D.push_back(command);
+    }
+    void RenderQueue::Submit(const RenderCommandUI& command)
+    {
+        m_commandsUI.push_back(command);
     }
     void RenderQueue::Draw(GraphicsAPI &graphicsAPI, const CameraData& cameraData, const std::vector<LightData>& lights)
     {
@@ -67,5 +73,41 @@ namespace eng
         m_commands2D.clear(); 
         graphicsAPI.SetBlendMode(BlendMode::Disabled);
         graphicsAPI.SetDepthTestEnabled(true);
+
+        //UI
+        graphicsAPI.SetDepthTestEnabled(false);
+        graphicsAPI.SetBlendMode(BlendMode::Alpha);
+        for (auto& command : m_commandsUI)
+        {
+            glm::mat4 ortho = glm::ortho(
+                0.0f, static_cast<float>(command.screenWidth),
+                0.0f, static_cast<float>(command.screenHeight)
+            );
+
+            command.shaderProgram->Bind();
+            command.shaderProgram->SetUniform("uProjection", ortho);
+            command.mesh->Bind();
+            m_commands2D.clear();
+
+            uint32_t indexBase = 0;
+            for (auto& batch : command.batches)
+            {
+                if (batch.texture)
+                {
+                    command.shaderProgram->SetUniform("uUseTexture", 1);
+                    command.shaderProgram->SetTexture("uTex", batch.texture);
+                }
+                else
+                    command.shaderProgram->SetUniform("uUseTexture", 0);
+
+                command.mesh->DrawIndexedRange(indexBase, batch.indexCount);
+                //error class "eng::Mesh" has no member "DrawIndexedRange"C/C++(135)
+                indexBase += batch.indexCount;
+            }
+            command.mesh->Unbind();
+        }
+        graphicsAPI.SetBlendMode(BlendMode::Disabled);
+        graphicsAPI.SetDepthTestEnabled(true);
+        m_commandsUI.clear();
     }
 }

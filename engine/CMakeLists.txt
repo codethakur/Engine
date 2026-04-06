@@ -40,6 +40,10 @@ add_library(${PROJECT_NAME} STATIC
     source/scene/components/ui/UIElementComponent.cpp
     source/scene/components/ui/CanvasComponent.cpp
     source/scene/components/ui/TextComponent.cpp
+    source/scene/components/ui/ButtonComponent.cpp
+    source/scene/components/ui/UIInputSystem.cpp
+    source/scene/components/ui/RectTransformComponent.cpp
+    
 
     source/audio/Audio.cpp
     source/audio/AudioManager.cpp
@@ -49,6 +53,8 @@ add_library(${PROJECT_NAME} STATIC
     source/physics/CollisionObject.cpp
     source/physics/KinematicCharacterController.cpp
     source/Common.h
+    source/font/Font.cpp
+    source/font/FontManager.cpp
 
 )
 
@@ -88,7 +94,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_BINARY_DIR})
 # Add freetype
 add_subdirectory(thirdparty/freetype-2.14.1 "${CMAKE_CURRENT_BINARY_DIR}/freetype_build")
 include_directories(thirdparty/freetype-2.14.1/include)
-target_link_libraries(${PROJECT_NAME} freetype)
+
 
 
 #------Audio------
@@ -138,6 +144,7 @@ target_link_libraries(${PROJECT_NAME}
         miniaudio
     PRIVATE
         OpenGL::GL
+        freetype  
 )
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD

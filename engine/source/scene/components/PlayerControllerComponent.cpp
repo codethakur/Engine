@@ -19,7 +19,7 @@ namespace eng
         if(inputManager.IsMousePositionChanged())
         {
             const auto& oldPos = inputManager.GetMousePosittionOld();
-            const auto& currentPos= inputManager.GetMousePosittionCurrent();
+            const auto& currentPos= inputManager.GetMousePositionCurrent();
 
             float deltaX = currentPos.x - oldPos.x;
             float deltaY = currentPos.y - oldPos.y;

@@ -33,11 +33,45 @@ namespace eng
         }
         return m_mouseKeys[button];
     }
+        void InputManager::SetMouseButtonWasPressed(int button, bool pressed)
+    {
+        if (button < 0 || button >= static_cast<int>(m_mouseKeyPressed.size()))
+        {
+            return;
+        }
+        m_mouseKeyPressed[button] = pressed;
+    }
 
+    bool InputManager::WasMouseButtonPressed(int button) const
+    {
+        if (button < 0 || button >= static_cast<int>(m_mouseKeyPressed.size()))
+        {
+            return false;
+        }
+        return m_mouseKeyPressed[button];
+    }
     void  InputManager::SetMousePositionOld(const glm::vec2& pos)
     {
         m_mousePositionOld = pos;
     }
+
+    void InputManager::SetMouseButtonWasReleased(int button, bool pressed)
+    {
+        if (button < 0 || button >= static_cast<int>(m_mouseKeyReleased.size()))
+        {
+            return;
+        }
+        m_mouseKeyReleased[button] = pressed;
+    }
+    bool InputManager::WasMouseButtonReleased(int button) const
+    {
+        if (button < 0 || button >= static_cast<int>(m_mouseKeyReleased.size()))
+        {
+            return false; 
+        }
+        return m_mouseKeyReleased[button];
+    }
+
     const glm::vec2&  InputManager::GetMousePosittionOld() const
     {
         return m_mousePositionOld;
@@ -46,7 +80,7 @@ namespace eng
     {
         m_mousePositionCurrent = pos;
     }
-    const glm::vec2&  InputManager::GetMousePosittionCurrent() const
+    const glm::vec2&  InputManager::GetMousePositionCurrent() const
     {
         return m_mousePositionCurrent;
     }
@@ -57,6 +91,18 @@ namespace eng
     bool InputManager::IsMousePositionChanged() const
     {
         return m_mousePositionChanged;
+    }
+    void InputManager::ClearStates()
+    {
+        SetMousePositionChanged(false);
+        for (auto key : m_mouseKeyPressed)
+        {
+            SetMouseButtonWasPressed(key, false);
+        }
+        for (auto key : m_mouseKeyReleased)
+        {
+            SetMouseButtonWasReleased(key, false);
+        }
     }
 }
 

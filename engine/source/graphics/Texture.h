@@ -12,6 +12,8 @@ namespace eng
         GLuint GetID() const;
         static std::shared_ptr<Texture>Load(const std::string& path);
         void Init(int width, int height, int numChannels, unsigned char* data);
+        int getWidth()const;
+        int getHeight()const;
         ~Texture();
     private:
         int m_width = 0;

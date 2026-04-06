@@ -17,6 +17,13 @@ namespace eng
   std::shared_ptr<ShaderProgram> GraphicsAPI::CreateShaderProgram(const std::string &vertexSource,
                                                                   const std::string &fragmentSource)
   {
+
+    ShaderKey key{ vertexSource, fragmentSource };
+    auto it = m_shaderCache.find(key);
+    if (it != m_shaderCache.end())
+    {
+        return it->second;
+    }
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     const char *vertexSourceCStr = vertexSource.c_str();
     glShaderSource(vertexShader, 1, &vertexSourceCStr, nullptr);
@@ -59,7 +66,12 @@ namespace eng
       std::cerr << "Shader link error:\n"<< infoLog << std::endl;
       return nullptr;
     }
-    return std::make_shared<ShaderProgram>(shaderProgramID);
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+    auto shaderProgram = std::make_shared<ShaderProgram>(shaderProgramID);
+    m_shaderCache.emplace(key, shaderProgram);
+
+    return shaderProgram;
   }
   const std::shared_ptr<ShaderProgram> &GraphicsAPI::GetDefaultShaderProgram()
   {
@@ -201,7 +213,50 @@ namespace eng
             m_default2DShaderProgram = CreateShaderProgram(vertexShaderSource, fragmentShaderSource);
         }
       return m_default2DShaderProgram;
-    }
+  }
+  const std::shared_ptr<ShaderProgram>&GraphicsAPI::GetDefaultUIShaderProgram()
+  {
+    if (!m_defaultUIShaderProgram)
+    {
+      std::string vertexShaderSource = R"(
+          #version 330 core
+          layout (location = 0) in vec2 position;
+          layout (location = 1) in vec4 color;
+          layout (location = 2) in vec2 uv;
+          out vec2 vUV;
+          out vec4 vColor;
+      
+          uniform mat4 uProjection;
+          void main()
+          {
+            vUV = uv;
+            vColor = color;
+            
+            gl_Position = uProjection * vec4(position, 0.0, 1.0);
+          } 
+        )";
+      std::string fragmentShaderSource = R"(
+          #version 330 core
+          in vec2 vUV;
+          in vec4 vColor;
+          uniform sampler2D uTex;
+          uniform int uUseTexture;
+          out vec4 FragColor;
+          void main()
+          {
+            vec4 src = (uUseTexture != 0) ? texture(uTex, vUV) * vColor : vColor;
+            FragColor = src;
+          }
+        )";
+        m_defaultUIShaderProgram = CreateShaderProgram(vertexShaderSource, fragmentShaderSource);
+     }
+    return m_defaultUIShaderProgram;
+  }
+  const Rect& GraphicsAPI::GetViewport() const 
+  { 
+    return m_viewport; 
+  }
+
 
   GLuint GraphicsAPI::CreateVertexBuffer(const std::vector<float> vertices)
   {
@@ -229,6 +284,16 @@ namespace eng
   {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
+
+    void GraphicsAPI::SetViewport(int x, int y, int width, int height)
+    {
+      glViewport(x, y, width, height);
+      m_viewport.x = x;
+      m_viewport.y = y;
+      m_viewport.width = width;
+      m_viewport.height = height;
+    }
+
   void GraphicsAPI::SetDepthTestEnabled(bool enable)
   {
     if(enable)

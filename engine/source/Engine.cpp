@@ -29,21 +29,36 @@ namespace eng
         if (action == GLFW_PRESS)
         {
             inputManager.SetMouseButtonPressed(button , true);
+            inputManager.SetMouseButtonWasPressed(button , true);
+            
         }
         else if (action == GLFW_RELEASE)
         {
             inputManager.SetMouseButtonPressed(button, false);
+           inputManager.SetMouseButtonWasReleased(button, true);  
         }
     }
     void currsorPositionCallback(GLFWwindow* window, double xpos, double ypos)
     {
-        auto& inputManager = eng::Engine::GetInstance().GetInputManager();   
-        inputManager.SetMousePositionOld(inputManager.GetMousePosittionCurrent());
-        glm::vec2 currentPos(static_cast<float>(xpos), static_cast<float>(ypos)); 
-        inputManager.SetMousePositionCurrent(currentPos); 
+        auto& inputManager = eng::Engine::GetInstance().GetInputManager();
+
+        inputManager.SetMousePositionOld(inputManager.GetMousePositionCurrent());
+
+        glm::vec2 currentPos(static_cast<float>(xpos), static_cast<float>(ypos));
+        inputManager.SetMousePositionCurrent(currentPos);
 
         inputManager.SetMousePositionChanged(true);
     }
+
+    void windowSizeCallback(GLFWwindow* window, int width, int height)
+    {
+        //eng::Engine::GetInstance().GetGraphicsAPI().SetViewport(0, 0, width, height);
+        int fbWidth, fbHeight;
+        glfwGetFramebufferSize(window, &fbWidth, &fbHeight);
+
+        eng::Engine::GetInstance().GetGraphicsAPI()
+            .SetViewport(0, 0, fbWidth, fbHeight);
+        }
 
     Engine& Engine::GetInstance()
     {
@@ -85,7 +100,8 @@ namespace eng
         glfwSetKeyCallback(m_window, keyCallback);
         glfwSetMouseButtonCallback(m_window, mouseButtonCallback);
         glfwSetCursorPosCallback(m_window, currsorPositionCallback);
-        glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
+        glfwSetWindowSizeCallback(m_window, windowSizeCallback);
+        //glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
         
 
         glfwMakeContextCurrent(m_window);
@@ -100,9 +116,12 @@ namespace eng
         glViewport(0, 0, fbWidth, fbHeight);
 
         m_graphicsAPI.Init();
+        //m_graphicsAPI.SetViewport(0, 0, width, height);
+        m_graphicsAPI.SetViewport(0, 0, fbWidth, fbHeight);
         m_physicsManager.Init();
         m_audiomManager.Init();
         m_renderQueue.Init();
+        m_fontmanager.Init();
         return m_application->Init();
     }
 
@@ -115,21 +134,27 @@ namespace eng
         while(!glfwWindowShouldClose(m_window) && !m_application->NeedToBeClosed())
         {
             glfwPollEvents();
-
+            double x, y;
+            glfwGetCursorPos(m_window, &x, &y);
+            m_inputManager.SetMousePositionCurrent(glm::vec2((float)x, (float)y));
             auto now =  std::chrono::high_resolution_clock::now();  
             float deltaTime = std::chrono::duration<float>(now - m_lastTimePoint).count();
             m_lastTimePoint = now;
             m_physicsManager.Update(deltaTime);
+           if(m_uiInputSystem.IsActive())
+           {
+             m_uiInputSystem.Update(deltaTime);
+           }
             m_application->Update(deltaTime);
-
-            m_graphicsAPI.SetClearColor(0.25f, 0.25f, 0.25f, 1.0f);
+            //m_graphicsAPI.SetClearColor(0.25f, 0.25f, 0.25f, 1.0f);
             m_graphicsAPI.clearBuffers();
 
             CameraData cameraData;
             std::vector<LightData>lights;
             int width = 0;
             int height = 0;
-            glfwGetWindowSize(m_window, &width, &height);
+           // glfwGetWindowSize(m_window, &width, &height);
+            glfwGetFramebufferSize(m_window, &width, &height);
             float aspect = static_cast<float>(width)/static_cast<float>(height);
 
             if(m_CurrentScreen)
@@ -154,10 +179,12 @@ namespace eng
             m_renderQueue.Draw(m_graphicsAPI, cameraData, lights);
 
             glfwSwapBuffers(m_window);
-            m_inputManager.SetMousePositionCurrent(m_inputManager.GetMousePosittionCurrent());
-            m_inputManager.SetMousePositionChanged(false);
+            // m_inputManager.SetMousePositionCurrent(m_inputManager.GetMousePositionCurrent());
+            // m_inputManager.SetMousePositionChanged(false);
+            m_inputManager.ClearStates();
 
         }
+        m_application.reset(nullptr);
     }
 
     void Engine::Destroy()
@@ -168,6 +195,10 @@ namespace eng
             glfwTerminate();
             m_window = nullptr;
         }
+    }
+    void Engine::SetCursorEnabled(bool enabled)
+    {
+        glfwSetInputMode(m_window, GLFW_CURSOR, enabled ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
     }
 
     void Engine::SetApplication(Application* app)
@@ -203,18 +234,26 @@ namespace eng
     {
         return m_audiomManager;
     }
-    void Engine::SetScene(Scene* scene)
+    FontManager& Engine::GetFontManager()
     {
-        m_CurrentScreen.reset(scene);
+        return m_fontmanager;
+    }
+    UIInputSystem& Engine::GetUIInputSystem()
+    {
+        return m_uiInputSystem;
+    }
+    void Engine::SetScene(const std::shared_ptr<Scene>&scene)
+    {
+        m_CurrentScreen = scene;
     }
     FileSystem& Engine::GetFileSystem()
     {
        return m_fileSystem;
     }
     
-    Scene* Engine::GetScene()
+    const std::shared_ptr<Scene>& Engine::GetScene()
     {
-        return m_CurrentScreen.get();
+        return m_CurrentScreen;
     }
     
 }
