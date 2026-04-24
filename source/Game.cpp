@@ -3,7 +3,7 @@
 #include <filesystem>
 #include <glad/glad.h> // before then GLFW  
 #include<GLFW/glfw3.h>
-
+#include <imgui.h>
 #include"Game.h"
 #include"TestObject.h"
 #include"Player.h"
@@ -135,6 +135,7 @@ bool Game::Init()
                     auto& engine = eng::Engine::GetInstance();
                     engine.GetUIInputSystem().GetCanvas()->SetActive(false);
                     engine.SetCursorEnabled(false);
+                    m_state = GameState::Playing; 
 
                     if (m_3DRoot)
                     {
@@ -215,15 +216,88 @@ void Game::Update(float deltaTime)
     auto& engine = eng::Engine::GetInstance();
     if (engine.GetInputManager().IsKeyPressed(GLFW_KEY_ESCAPE))
     {
-        if (m_3DRoot && m_3DRoot->IsActive())
+        if (m_state == GameState::Playing && m_3DRoot && m_3DRoot->IsActive())
         {
-            engine.GetUIInputSystem().GetCanvas()->SetActive(true);
+            //engine.GetUIInputSystem().GetCanvas()->SetActive(true);
+            m_state = GameState::Paused;
             engine.SetCursorEnabled(true);
-            m_3DRoot->SetActive(false);
+           // m_3DRoot->SetActive(false);
+        }
+        else if (m_state == GameState::Paused)
+        {
+            m_state = GameState::Playing;
+            engine.SetCursorEnabled(false);
         }
     }
     m_scene->Update(deltaTime); 
+
+    if (m_state == GameState::Playing)
+        RenderHUD();
+    else if (m_state == GameState::Paused)
+        RenderPauseMenu();
     
+}
+
+void Game::RenderHUD()
+{
+    ImGuiIO& io = ImGui::GetIO();
+    ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(160, 70), ImGuiCond_Always);
+    ImGui::SetNextWindowBgAlpha(0.4f);
+    ImGui::Begin("HUD", nullptr,
+        ImGuiWindowFlags_NoTitleBar |
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoScrollbar |
+        ImGuiWindowFlags_NoInputs |
+        ImGuiWindowFlags_NoCollapse |
+       ImGuiWindowFlags_NoBringToFrontOnFocus
+    );
+    ImGui::TextColored(ImVec4(0.2f, 1.0f, 0.2f, 1.0f), "HP:   %d", m_health);
+    ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.2f, 1.0f), "Ammo: %d", m_ammo);
+    ImGui::End();
+}
+
+void Game::RenderPauseMenu()
+{
+    ImGuiIO& io = ImGui::GetIO();
+    ImVec2 center(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
+    ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+    ImGui::SetNextWindowSize(ImVec2(200, 160), ImGuiCond_Always);
+    ImGui::SetNextWindowBgAlpha(0.85f);
+    ImGui::Begin("Paused", nullptr,
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoCollapse |
+        ImGuiWindowFlags_NoScrollbar
+    );
+
+    ImGui::SetCursorPosX((200 - 120) * 0.5f);
+    if (ImGui::Button("Resume", ImVec2(120, 36)))
+    {
+        m_state = GameState::Playing;
+        eng::Engine::GetInstance().SetCursorEnabled(false);
+    }
+
+    ImGui::Spacing();
+    ImGui::SetCursorPosX((200 - 120) * 0.5f);
+    if (ImGui::Button("Main Menu", ImVec2(120, 36)))
+    {
+        m_state = GameState::MainMenu;
+        m_3DRoot->SetActive(false);
+        auto& engine = eng::Engine::GetInstance();
+        engine.GetUIInputSystem().GetCanvas()->SetActive(true);
+        engine.SetCursorEnabled(true);
+    }
+
+    ImGui::Spacing();
+    ImGui::SetCursorPosX((200 - 120) * 0.5f);
+    if (ImGui::Button("Quit", ImVec2(120, 36)))
+    {
+        SetNeedsToBeClosed(true);
+    }
+
+    ImGui::End();
 }
 
 void Game::Destroy()

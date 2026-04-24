@@ -5,7 +5,13 @@
 #include"scene/components/CameraComponent.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
 #include <iostream>
+
 namespace eng
 {
     void keyCallback(GLFWwindow *window, int key,  int, int action, int )
@@ -122,6 +128,14 @@ namespace eng
         m_audiomManager.Init();
         m_renderQueue.Init();
         m_fontmanager.Init();
+
+        // ImGui init
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGui::StyleColorsDark();
+        ImGui_ImplGlfw_InitForOpenGL(m_window, true);
+        ImGui_ImplOpenGL3_Init("#version 330");
+
         return m_application->Init();
     }
 
@@ -134,6 +148,11 @@ namespace eng
         while(!glfwWindowShouldClose(m_window) && !m_application->NeedToBeClosed())
         {
             glfwPollEvents();
+
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
             double x, y;
             glfwGetCursorPos(m_window, &x, &y);
             m_inputManager.SetMousePositionCurrent(glm::vec2((float)x, (float)y));
@@ -178,6 +197,9 @@ namespace eng
 
             m_renderQueue.Draw(m_graphicsAPI, cameraData, lights);
 
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
             glfwSwapBuffers(m_window);
             // m_inputManager.SetMousePositionCurrent(m_inputManager.GetMousePositionCurrent());
             // m_inputManager.SetMousePositionChanged(false);
@@ -192,6 +214,9 @@ namespace eng
         if(m_application){
             m_application->Destroy();
             m_application.reset();
+            ImGui_ImplOpenGL3_Shutdown();
+            ImGui_ImplGlfw_Shutdown();
+            ImGui::DestroyContext();
             glfwTerminate();
             m_window = nullptr;
         }

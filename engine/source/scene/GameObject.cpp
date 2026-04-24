@@ -1,16 +1,16 @@
 #include "scene/GameObject.h"
 #include "Engine.h"
-#include"graphics/VertexLayout.h"
-#include"render/Material.h"
-#include"render/Mesh.h"
-#include"graphics/Texture.h"
-#include"scene/components/MeshComponent.h"
-#include"scene/components/AnimationComponent.h"
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#define GLM_ENABLE_EXPERIMENTAL
+#include "graphics/VertexLayout.h"
+#include "render/Material.h"
+#include "render/Mesh.h"
+#include "graphics/Texture.h"
+#include "scene/components/MeshComponent.h"
+#include "scene/components/AnimationComponent.h"
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 
 #define CGLTF_IMPLEMENTATION
