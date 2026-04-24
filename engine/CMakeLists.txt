@@ -1,0 +1,178 @@
+cmake_minimum_required(VERSION 3.10)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+
+project(Engine)
+set(ASSETS_DIR "${CMAKE_SOURCE_DIR}/assets")
+configure_file(
+    ${PROJECT_SOURCE_DIR}/config.h.in
+    ${PROJECT_BINARY_DIR}/config.h
+)
+
+# =========================
+# Engine library
+# =========================
+add_library(${PROJECT_NAME} STATIC
+    source/Engine.cpp
+    source/Application.cpp
+    source/input/InputManager.cpp
+    source/graphics/ShaderProgram.cpp
+    source/graphics/GraphicsAPI.cpp
+    source/graphics/Texture.cpp
+    source/render/Material.cpp
+    source/render/Mesh.cpp
+    source/render/RenderQueue.cpp
+    source/scene/GameObject.cpp
+    source/scene/Scene.cpp
+    source/scene/Component.cpp
+    source/Scene/components/MeshComponent.cpp
+    source/Scene/components/CameraComponent.cpp
+    source/scene/components/PhysicsComponent.cpp
+    source/Scene/components/PlayerControllerComponent.cpp
+    source/io/FileSystem.cpp
+    source/scene/components/LightComponent.cpp
+    source/scene/components/AnimationComponent.cpp
+    source/scene/components/AudioComponent.cpp
+    source/scene/components/AudioListenerComponent.cpp
+    source/scene/components/SpriteComponent.cpp
+
+    source/scene/components/ui/UIElementComponent.cpp
+    source/scene/components/ui/CanvasComponent.cpp
+    source/scene/components/ui/TextComponent.cpp
+    source/scene/components/ui/ButtonComponent.cpp
+    source/scene/components/ui/UIInputSystem.cpp
+    source/scene/components/ui/RectTransformComponent.cpp
+    
+
+    source/audio/Audio.cpp
+    source/audio/AudioManager.cpp
+    source/physics/physicsManager.cpp
+    source/physics/Collider.cpp
+    source/physics/RigidBody.cpp
+    source/physics/CollisionObject.cpp
+    source/physics/KinematicCharacterController.cpp
+    source/Common.h
+    source/font/Font.cpp
+    source/font/FontManager.cpp
+
+)
+
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/source
+        ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glad/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glm
+        ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/bullet3/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/imgui
+        ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/imgui/backends
+)
+
+# =========================
+# GLAD
+# =========================
+add_library(glad STATIC
+    thirdparty/glad/src/glad.c
+)
+
+target_include_directories(glad PUBLIC
+    thirdparty/glad/include
+)
+
+# =========================
+# GLFW
+# =========================
+add_subdirectory(thirdparty/glfw-3.4)
+
+# =========================
+# OpenGL (portable)
+# =========================
+find_package(OpenGL REQUIRED)
+
+# =========================
+# ImGui
+# =========================
+add_library(imgui STATIC
+    thirdparty/imgui/imgui.cpp
+    thirdparty/imgui/imgui_draw.cpp
+    thirdparty/imgui/imgui_widgets.cpp
+    thirdparty/imgui/imgui_tables.cpp
+    thirdparty/imgui/backends/imgui_impl_glfw.cpp
+    thirdparty/imgui/backends/imgui_impl_opengl3.cpp
+)
+
+target_include_directories(imgui PUBLIC
+    thirdparty/imgui
+    thirdparty/imgui/backends
+    thirdparty/glfw-3.4/include
+)
+
+target_link_libraries(imgui PUBLIC glfw OpenGL::GL)
+
+include_directories(thirdparty/stb_image)
+include_directories(thirdparty/json)
+include_directories(thirdparty/cgltf)
+target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_BINARY_DIR})
+
+# Add freetype
+add_subdirectory(thirdparty/freetype-2.14.1 "${CMAKE_CURRENT_BINARY_DIR}/freetype_build")
+include_directories(thirdparty/freetype-2.14.1/include)
+
+
+
+#------Audio------
+add_library(miniaudio INTERFACE)
+target_include_directories(miniaudio INTERFACE thirdparty/miniaudio)
+
+if(UNIX AND NOT APPLE)
+  target_link_libraries(miniaudio INTERFACE dl pthread m)
+endif()
+
+if(WIN32)
+  target_link_libraries(miniaudio INTERFACE winmm user32 ole32)
+endif()
+
+if(APPLE)
+  find_library(COREAUDIO_FRAMEWORK CoreAudio)
+  find_library(AUDIOTOOLBOX_FRAMEWORK AudioToolbox)
+  find_library(AUDIOUNIT_FRAMEWORK AudioUnit)
+  find_library(COREFOUNDATION_FRAMEWORK CoreFoundation)
+  target_link_libraries(miniaudio INTERFACE
+    ${COREAUDIO_FRAMEWORK}
+    ${AUDIOUNIT_FRAMEWORK}
+    ${AUDIOTOOLBOX_FRAMEWORK}
+    ${COREFOUNDATION_FRAMEWORK}
+  )
+endif()
+
+# ---- Bullet configuration ----
+set(BUILD_BULLET2_DEMOS OFF CACHE BOOL "" FORCE)
+set(BUILD_CPU_DEMOS OFF CACHE BOOL "" FORCE)
+set(BUILD_OPENGL3_DEMOS OFF CACHE BOOL "" FORCE)
+set(BUILD_UNIT_TESTS OFF CACHE BOOL "" FORCE)
+set(BUILD_EXTRAS OFF CACHE BOOL "" FORCE)
+set(BUILD_BULLET3 OFF CACHE BOOL "" FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+
+add_subdirectory(thirdparty/bullet3)
+
+
+target_link_libraries(${PROJECT_NAME}
+    PUBLIC
+        glfw
+        glad
+        imgui
+        LinearMath
+        BulletCollision
+        BulletDynamics  
+        miniaudio
+    PRIVATE
+        OpenGL::GL
+        freetype  
+)
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${ASSETS_DIR}
+    ${CMAKE_BINARY_DIR}/assets
+)
