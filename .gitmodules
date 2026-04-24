@@ -1,0 +1,6 @@
+[submodule "engine/thirdparty/bullet3"]
+	path = engine/thirdparty/bullet3
+	url = https://github.com/bulletphysics/bullet3.git
+[submodule "engine/thirdparty/imgui"]
+	path = engine/thirdparty/imgui
+	url = https://github.com/ocornut/imgui.git
