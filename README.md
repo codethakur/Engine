@@ -18,8 +18,8 @@
 <p>2D && UI</p>
 <img width="1274" height="830" alt="Screenshot" src="https://github.com/user-attachments/assets/0276ea29-55cf-46c2-adb7-487563328f22" />
 
+<p>Add ImGui integration with HUD and pause menu</p>
 
 <img width="1274" height="830" alt="Screenshot" src="https://github.com/user-attachments/assets/e36e17ae-5b53-4627-9e32-d4815a69babe" />
 
-<p>Add ImGui integration with HUD and pause menu</p>
 <img width="1274" height="830" alt="Screenshot" src="https://github.com/user-attachments/assets/5bf76f66-dde4-4926-b471-6fe5fc98395e" />
