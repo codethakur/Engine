@@ -22,5 +22,8 @@
 
 <img width="1274" height="830" alt="Screenshot" src="https://github.com/user-attachments/assets/e36e17ae-5b53-4627-9e32-d4815a69babe" />
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4efc15e4ae109b7ec23abace815f26b66d3e009d
 <img width="1274" height="830" alt="Screenshot" src="https://github.com/user-attachments/assets/5bf76f66-dde4-4926-b471-6fe5fc98395e" />
