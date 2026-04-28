@@ -214,6 +214,19 @@ bool Game::Init()
 void Game::Update(float deltaTime)
 {
     auto& engine = eng::Engine::GetInstance();
+    // Block engine input when ImGui is using mouse
+    ImGuiIO& io = ImGui::GetIO();
+    if (io.WantCaptureMouse)
+    {
+        engine.GetInputManager().ClearStates();
+        engine.GetInputManager().SetMousePositionChanged(false);
+        for (int i = 0; i < 16; i++)
+        {
+            engine.GetInputManager().SetMouseButtonPressed(i, false);
+            engine.GetInputManager().SetMouseButtonWasPressed(i, false);
+        }
+    }
+
     if (engine.GetInputManager().IsKeyPressed(GLFW_KEY_ESCAPE))
     {
         if (m_state == GameState::Playing && m_3DRoot && m_3DRoot->IsActive())
@@ -236,6 +249,12 @@ void Game::Update(float deltaTime)
     else if (m_state == GameState::Paused)
         RenderPauseMenu();
     
+
+
+    if (m_showSettings && m_state == GameState::Paused)
+        RenderSettingsWindow();
+
+        
 }
 
 void Game::RenderHUD()
@@ -283,11 +302,7 @@ void Game::RenderPauseMenu()
     ImGui::SetCursorPosX((200 - 120) * 0.5f);
     if (ImGui::Button("Main Menu", ImVec2(120, 36)))
     {
-        m_state = GameState::MainMenu;
-        m_3DRoot->SetActive(false);
-        auto& engine = eng::Engine::GetInstance();
-        engine.GetUIInputSystem().GetCanvas()->SetActive(true);
-        engine.SetCursorEnabled(true);
+       m_showSettings = !m_showSettings;
     }
 
     ImGui::Spacing();
@@ -298,6 +313,43 @@ void Game::RenderPauseMenu()
     }
 
     ImGui::End();
+}
+void Game::RenderSettingsWindow()
+{
+    ImGuiIO& io = ImGui::GetIO();
+
+    ImVec2 settingsPos(
+        io.DisplaySize.x * 0.5f + 120.0f,
+        io.DisplaySize.y * 0.5f - 80.0f
+    );
+    ImGui::SetNextWindowPos(settingsPos, ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(280, 160), ImGuiCond_Always);
+    ImGui::SetNextWindowBgAlpha(0.85f);
+
+    ImGui::Begin("setting", nullptr,
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoCollapse
+    );
+
+    ImGui::SliderFloat("Brightness", &m_brightness, 0.0f, 2.0f);
+    ImGui::Separator();
+
+    ImGui::ColorEdit3("Background", m_bgColor);
+
+    ImGui::Separator();
+
+    ImGui::SliderFloat("Music Volume", &m_musicVolume, 0.0f, 1.0f);
+
+    eng::Engine::GetInstance().GetGraphicsAPI().SetClearColor(
+        m_bgColor[0] * m_brightness,
+        m_bgColor[1] * m_brightness,
+        m_bgColor[2] * m_brightness,
+        1.0f
+    );
+
+    ImGui::End();
+
 }
 
 void Game::Destroy()
