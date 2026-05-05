@@ -21,6 +21,7 @@ add_executable(${PROJECT_NAME}
     source/Bullet.cpp
     source/JumpPlatform.h
     source/JumpPlatform.cpp
+    source/GUI/imGUI.cpp
 )
 include_directories(engine/source)
 
