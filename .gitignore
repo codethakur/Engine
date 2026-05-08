@@ -1,6 +1,36 @@
-engine/thirdparty/
+# Build output
 out/
-build*/
-imgui.ini
+build/
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+
+# Mac
 .DS_Store
+
+# VSCode
 .vscode/
+
+# Binaries
+*.o
+*.a
+*.so
+*.exe
+
+# Thirdparty source folders
+engine/thirdparty/bullet3/
+engine/thirdparty/freetype-2.14.1/
+engine/thirdparty/glew/
+engine/thirdparty/glfw-3.4/
+engine/thirdparty/glm/
+engine/thirdparty/imgui/
+engine/thirdparty/glad/
+engine/thirdparty/json/
+engine/thirdparty/stb_image/
+engine/thirdparty/miniaudio/
+engine/thirdparty/cgltf/
+
+# imgui settings
+imgui.ini
